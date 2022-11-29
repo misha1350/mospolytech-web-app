@@ -1,0 +1,9 @@
+version: "1"
+project:
+    id: ""
+packages: 
+  - name: "mysql"
+    path: "mysql"
+    engine: "mysql"
+    schema: "schema.sql"
+    queries: "query.sql"
