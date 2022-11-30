@@ -5,6 +5,8 @@ import (
 	// "gorm.io/driver/mysql"
 	// "gorm.io/gorm"
 
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -12,11 +14,23 @@ import (
 
 func main() {
 	server := gin.Default()
+	server.Static("/css", "./templates/css/index.css")
+
+	server.LoadHTMLGlob("templates/*.???l")
+
 	server.GET("/ping", func(context *gin.Context) {
 		context.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
+
+	server.GET("/", func(context *gin.Context) {
+		context.HTML(
+			http.StatusOK,
+			"index.tmpl",
+			gin.H{"title": "Home Page"})
+	})
+
 	server.Run(":8080") // listen and serve on 0.0.0.0:8080
 
 	// sqlc
