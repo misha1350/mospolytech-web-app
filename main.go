@@ -14,9 +14,18 @@ import (
 
 func main() {
 	server := gin.Default()
-	server.Static("/css", "./templates/css/index.css")
+	//serve css
+	server.StaticFile("/css/", "./templates/css/index.css")
 
-	server.LoadHTMLGlob("templates/*.???l")
+	//serve javascript
+	server.StaticFile("/js/script.js", "./templates/js/script.js")
+
+	// i forgor if it reads and does anything with tmpl's 💀💀💀
+	server.LoadHTMLGlob("templates/*.html")
+
+	server.Use(gin.Recovery()) // middlewares.Logger(),
+	// middlewares.BasicAuth(),
+	// gindump.Dump()
 
 	server.GET("/ping", func(context *gin.Context) {
 		context.JSON(200, gin.H{
@@ -27,11 +36,20 @@ func main() {
 	server.GET("/", func(context *gin.Context) {
 		context.HTML(
 			http.StatusOK,
-			"index.tmpl",
+			"index.html",
 			gin.H{"title": "Home Page"})
 	})
 
-	server.Run(":8080") // listen and serve on 0.0.0.0:8080
+	// server.GET("/js/script.js", func(context *gin.Context) {
+	// 	if pusher := context.Writer.Pusher(); pusher != nil {
+	// 		// use pusher.Push() to do server push
+	// 		if err := pusher.Push("/js/script.js", nil); err != nil {
+	// 			log.Printf("Failed to push: %v", err)
+	// 		}
+	// 	}
+	// })
+
+	server.Run("127.0.0.1:8082") // listen and serve on 0.0.0.0:8080
 
 	// sqlc
 

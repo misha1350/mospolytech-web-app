@@ -1,3 +1,67 @@
 {{ template "header.html" }}
+<script  src="./js/script.js"></script>
 <h1>123</h1>
+hi from index.html
+
+<dialog class="modal" id="modal">
+    <h2>Add user</h2>
+    <!-- To-do: make correct SQL queries to INSERT new data -->
+   <form action="result.php" method="post">
+              <h5>Вы можете добавить нового пользователя.</h5>
+              <input type="text" name="add_event" hidden value=
+              "INSERT INTO eventlist (type_id, subject_name, date, var_amount, var_cost)
+              VALUES">
+          
+          <p>Email Address:
+          <input type="text" name="email" size="60" value="" required />
+          </p>
+          
+          <p>First Name:
+            <input type="text" name="firstname" size="30" value="" required />
+          </p>
+
+          <p>Last Name:
+            <input type="text" name="lastname" size="50" value=""/>
+          </p>
+        
+          <!-- To-do: port office selection from PHP's PDO method to Golang -->
+          <!--
+          <p>Office:
+          <select name="office">
+              <option value="1">Choose office</option>
+              
+              <? for ($i = 0; $i < count($eventTypes); $i++) {
+                  ?>
+                  <option value="<?echo $eventTypes[$i][0]?>"> <?echo($eventTypes[$i][1])?> </option>
+              <? } ?>
+          </select>
+          </p> >
+        -->
+          
+            <p>Birthdate:
+            <input type="date" name="birthdate" value="" required />
+            </p>
+
+            <!-- To-do: encrypt password data to md5 -->
+            <p>Password:
+            <input type="password" name="password" size="32" value="" required />
+            </p>
+          
+            <!-- To-do: confirm if passwords are correct -->
+            <p>Confirm Password:
+            <input type="password" name="password2" size="32" value="" required />
+            </p>
+          
+          <p>	<input type="submit" value="Add new user"/>
+          <button class="button close-button"></button>
+          
+          <input type="text" hidden value="<?echo $db_user?>" name="db_user" size="30" value="" required>
+          <input type="password" hidden value="<?echo $user_pw?>" name="user_pw" size="30" value="" />
+          </form>
+              
+          </p>
+  
+  </dialog>
+  
+
 {{ template "footer.html" }}
