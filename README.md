@@ -1,2 +1,2 @@
 # MosPolytech Web App
-doodledip
+MosPolytech Web App
