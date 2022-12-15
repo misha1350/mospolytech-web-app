@@ -20,7 +20,7 @@ func main() {
 	//serve javascript
 	server.StaticFile("/js/script.js", "./templates/js/script.js")
 
-	// i forgor if it reads and does anything with tmpl's 💀💀💀
+	// load HTML templates
 	server.LoadHTMLGlob("templates/*.html")
 
 	server.Use(gin.Recovery()) // middlewares.Logger(),
@@ -39,15 +39,6 @@ func main() {
 			"index.html",
 			gin.H{"title": "Home Page"})
 	})
-
-	// server.GET("/js/script.js", func(context *gin.Context) {
-	// 	if pusher := context.Writer.Pusher(); pusher != nil {
-	// 		// use pusher.Push() to do server push
-	// 		if err := pusher.Push("/js/script.js", nil); err != nil {
-	// 			log.Printf("Failed to push: %v", err)
-	// 		}
-	// 	}
-	// })
 
 	server.Run("127.0.0.1:8082") // listen and serve on 0.0.0.0:8080
 
