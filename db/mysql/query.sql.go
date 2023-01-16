@@ -10,6 +10,45 @@ import (
 	"database/sql"
 )
 
+const addUser = `-- name: AddUser :execresult
+INSERT INTO users (
+  RoleID, Email, Password, FirstName, LastName, OfficeID, Birthdate, Active
+) VALUES (
+  1, ?, ?, ?, ?, ?, ?, 1
+)
+`
+
+type AddUserParams struct {
+	Email     string
+	Password  string
+	Firstname sql.NullString
+	Lastname  string
+	Officeid  sql.NullInt32
+	Birthdate sql.NullTime
+}
+
+func (q *Queries) AddUser(ctx context.Context, arg AddUserParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, addUser,
+		arg.Email,
+		arg.Password,
+		arg.Firstname,
+		arg.Lastname,
+		arg.Officeid,
+		arg.Birthdate,
+	)
+}
+
+const banUser = `-- name: BanUser :exec
+UPDATE users
+SET Active = 0
+WHERE ID = ?
+`
+
+func (q *Queries) BanUser(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, banUser, id)
+	return err
+}
+
 const createCountry = `-- name: CreateCountry :execresult
 INSERT INTO countries (
   Name
@@ -44,6 +83,100 @@ func (q *Queries) GetCountry(ctx context.Context, id int32) (Country, error) {
 	return i, err
 }
 
+const getOffices = `-- name: GetOffices :many
+SELECT id, countryid, title, phone, contact FROM offices
+ORDER BY ID
+`
+
+func (q *Queries) GetOffices(ctx context.Context) ([]Office, error) {
+	rows, err := q.db.QueryContext(ctx, getOffices)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Office
+	for rows.Next() {
+		var i Office
+		if err := rows.Scan(
+			&i.ID,
+			&i.Countryid,
+			&i.Title,
+			&i.Phone,
+			&i.Contact,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getUserToUpdate = `-- name: GetUserToUpdate :one
+SELECT id, roleid, email, password, firstname, lastname, officeid, birthdate, active FROM users
+WHERE ID = ? LIMIT 1
+`
+
+func (q *Queries) GetUserToUpdate(ctx context.Context, id int32) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserToUpdate, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Roleid,
+		&i.Email,
+		&i.Password,
+		&i.Firstname,
+		&i.Lastname,
+		&i.Officeid,
+		&i.Birthdate,
+		&i.Active,
+	)
+	return i, err
+}
+
+const getUsers = `-- name: GetUsers :many
+SELECT id, roleid, email, password, firstname, lastname, officeid, birthdate, active FROM users
+ORDER BY ID
+`
+
+func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, getUsers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.Roleid,
+			&i.Email,
+			&i.Password,
+			&i.Firstname,
+			&i.Lastname,
+			&i.Officeid,
+			&i.Birthdate,
+			&i.Active,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listCountries = `-- name: ListCountries :many
 SELECT id, name FROM countries
 ORDER BY Name
@@ -70,4 +203,36 @@ func (q *Queries) ListCountries(ctx context.Context) ([]Country, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateUser = `-- name: UpdateUser :exec
+UPDATE users
+SET
+  RoleID = ?,
+  Email = ?,
+  FirstName = ?,
+  LastName = ?,
+  OfficeID = ?
+WHERE ID = ?
+`
+
+type UpdateUserParams struct {
+	Roleid    int32
+	Email     string
+	Firstname sql.NullString
+	Lastname  string
+	Officeid  sql.NullInt32
+	ID        int32
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
+	_, err := q.db.ExecContext(ctx, updateUser,
+		arg.Roleid,
+		arg.Email,
+		arg.Firstname,
+		arg.Lastname,
+		arg.Officeid,
+		arg.ID,
+	)
+	return err
 }
