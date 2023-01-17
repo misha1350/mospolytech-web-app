@@ -51,3 +51,7 @@ UPDATE users
 SET Active = 0
 WHERE ID = ?;
 
+-- name: UnbanUser :exec
+UPDATE users
+SET Active = 1
+WHERE ID = ?;

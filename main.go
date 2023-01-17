@@ -5,15 +5,29 @@ import (
 	// "gorm.io/driver/mysql"
 	// "gorm.io/gorm"
 
+	"io"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"gitlab.com/misha1350/mospolytech-web-app/middleware"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
+func logOutput() {
+	f, _ := os.Create("access.log")
+	// persistent logs can grow extremely large with this:
+	// f, _ := os.OpenFile("access.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
+}
+
 func main() {
-	server := gin.Default()
+
+	logOutput()
+	server := gin.New()
+	server.Use(gin.Recovery(), middleware.Logger())
+
 	//serve css
 	server.StaticFile("/css/", "./templates/css/index.css")
 
@@ -23,8 +37,7 @@ func main() {
 	// load HTML templates
 	server.LoadHTMLGlob("templates/*.html")
 
-	server.Use(gin.Recovery()) // middlewares.Logger(),
-	// middlewares.BasicAuth(),
+	// middleware.BasicAuth(),
 	// gindump.Dump()
 
 	server.GET("/ping", func(context *gin.Context) {
@@ -40,7 +53,7 @@ func main() {
 			gin.H{"title": "Home Page"})
 	})
 
-	server.Run("127.0.0.1:8082") // listen and serve on 0.0.0.0:8080
+	server.Run("127.0.0.1:8082") // listen and serve on this address
 
 	// sqlc
 
