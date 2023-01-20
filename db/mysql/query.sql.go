@@ -8,7 +8,36 @@ package mysql
 import (
 	"context"
 	"database/sql"
+	"time"
 )
+
+const addTracking = `-- name: AddTracking :execresult
+INSERT INTO tracking (
+  UserID, Date, TimeIn, TimeOut, Hours, Notes
+) VALUES (
+  ?, ?, ?, ?, ?, ?
+)
+`
+
+type AddTrackingParams struct {
+	Userid  int32
+	Date    time.Time
+	Timein  time.Time
+	Timeout time.Time
+	Hours   string
+	Notes   sql.NullString
+}
+
+func (q *Queries) AddTracking(ctx context.Context, arg AddTrackingParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, addTracking,
+		arg.Userid,
+		arg.Date,
+		arg.Timein,
+		arg.Timeout,
+		arg.Hours,
+		arg.Notes,
+	)
+}
 
 const addUser = `-- name: AddUser :execresult
 INSERT INTO users (
@@ -71,6 +100,48 @@ func (q *Queries) DeleteCountry(ctx context.Context, id int32) error {
 	return err
 }
 
+const deleteTracking = `-- name: DeleteTracking :exec
+DELETE FROM tracking
+WHERE ID = ?
+`
+
+func (q *Queries) DeleteTracking(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, deleteTracking, id)
+	return err
+}
+
+const deleteUser = `-- name: DeleteUser :exec
+DELETE FROM users
+WHERE ID = ?
+`
+
+func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, deleteUser, id)
+	return err
+}
+
+const findUserByEmail = `-- name: FindUserByEmail :one
+SELECT id, roleid, email, password, firstname, lastname, officeid, birthdate, active FROM users
+WHERE Email = ? LIMIT 1
+`
+
+func (q *Queries) FindUserByEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRowContext(ctx, findUserByEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Roleid,
+		&i.Email,
+		&i.Password,
+		&i.Firstname,
+		&i.Lastname,
+		&i.Officeid,
+		&i.Birthdate,
+		&i.Active,
+	)
+	return i, err
+}
+
 const getCountry = `-- name: GetCountry :one
 SELECT id, name FROM countries
 WHERE ID = ? LIMIT 1
@@ -103,6 +174,42 @@ func (q *Queries) GetOffices(ctx context.Context) ([]Office, error) {
 			&i.Title,
 			&i.Phone,
 			&i.Contact,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getTracking = `-- name: GetTracking :many
+SELECT id, userid, date, timein, timeout, hours, notes FROM tracking
+ORDER BY ID
+`
+
+func (q *Queries) GetTracking(ctx context.Context) ([]Tracking, error) {
+	rows, err := q.db.QueryContext(ctx, getTracking)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Tracking
+	for rows.Next() {
+		var i Tracking
+		if err := rows.Scan(
+			&i.ID,
+			&i.Userid,
+			&i.Date,
+			&i.Timein,
+			&i.Timeout,
+			&i.Hours,
+			&i.Notes,
 		); err != nil {
 			return nil, err
 		}
@@ -203,6 +310,49 @@ func (q *Queries) ListCountries(ctx context.Context) ([]Country, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const unbanUser = `-- name: UnbanUser :exec
+UPDATE users
+SET Active = 1
+WHERE ID = ?
+`
+
+func (q *Queries) UnbanUser(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, unbanUser, id)
+	return err
+}
+
+const updateTracking = `-- name: UpdateTracking :exec
+UPDATE tracking
+SET
+  Date = ?,
+  TimeIn = ?,
+  TimeOut = ?,
+  Hours = ?,
+  Notes = ?
+WHERE ID = ?
+`
+
+type UpdateTrackingParams struct {
+	Date    time.Time
+	Timein  time.Time
+	Timeout time.Time
+	Hours   string
+	Notes   sql.NullString
+	ID      int32
+}
+
+func (q *Queries) UpdateTracking(ctx context.Context, arg UpdateTrackingParams) error {
+	_, err := q.db.ExecContext(ctx, updateTracking,
+		arg.Date,
+		arg.Timein,
+		arg.Timeout,
+		arg.Hours,
+		arg.Notes,
+		arg.ID,
+	)
+	return err
 }
 
 const updateUser = `-- name: UpdateUser :exec

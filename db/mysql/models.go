@@ -6,6 +6,7 @@ package mysql
 
 import (
 	"database/sql"
+	"time"
 )
 
 type Country struct {
@@ -24,6 +25,16 @@ type Office struct {
 type Role struct {
 	ID    int32
 	Title string
+}
+
+type Tracking struct {
+	ID      int32
+	Userid  int32
+	Date    time.Time
+	Timein  time.Time
+	Timeout time.Time
+	Hours   string
+	Notes   sql.NullString
 }
 
 type User struct {

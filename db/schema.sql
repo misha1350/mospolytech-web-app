@@ -37,15 +37,15 @@ CREATE TABLE `users` (
   CONSTRAINT `FK_Users_Roles` FOREIGN KEY (`RoleID`) REFERENCES `roles` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
-CREATE TABLE 'tracking' (
-  'ID' int(11) NOT NULL AUTO_INCREMENT,
-  'UserID' int(11) NOT NULL,
-  'Date' date NOT NULL,
-  'TimeIn' datetime NOT NULL,
-  'TimeOut' datetime NOT NULL,
-  'Hours' decimal(10,2) NOT NULL,
-  'Notes' varchar(250) COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY ('ID'),
-  KEY 'FK_Tracking_Users' ('UserID'),
-  CONSTRAINT 'FK_Tracking_Users' FOREIGN KEY ('UserID') REFERENCES 'users' ('ID') ON DELETE NO ACTION ON UPDATE NO ACTION
+CREATE TABLE `tracking` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `UserID` int(11) NOT NULL,
+  `Date` date NOT NULL,
+  `TimeIn` datetime NOT NULL,
+  `TimeOut` datetime NOT NULL,
+  `Hours` decimal(10,2) NOT NULL,
+  `Notes` varchar(250) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `FK_Tracking_Users` (`UserID`),
+  CONSTRAINT `FK_Tracking_Users` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );

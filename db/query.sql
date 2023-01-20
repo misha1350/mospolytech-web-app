@@ -55,3 +55,36 @@ WHERE ID = ?;
 UPDATE users
 SET Active = 1
 WHERE ID = ?;
+
+-- name: DeleteUser :exec
+DELETE FROM users
+WHERE ID = ?;
+
+-- name: FindUserByEmail :one
+SELECT * FROM users
+WHERE Email = ? LIMIT 1;
+
+-- name: GetTracking :many
+SELECT * FROM tracking
+ORDER BY ID;
+
+-- name: AddTracking :execresult
+INSERT INTO tracking (
+  UserID, Date, TimeIn, TimeOut, Hours, Notes
+) VALUES (
+  ?, ?, ?, ?, ?, ?
+);
+
+-- name: UpdateTracking :exec
+UPDATE tracking
+SET
+  Date = ?,
+  TimeIn = ?,
+  TimeOut = ?,
+  Hours = ?,
+  Notes = ?
+WHERE ID = ?;
+
+-- name: DeleteTracking :exec
+DELETE FROM tracking
+WHERE ID = ?;
