@@ -50,7 +50,7 @@ type User struct {
 	Roleid    int32
 	Email     string
 	Password  string
-	Firstname sql.NullString
+	Firstname string
 	Lastname  string
 	Officeid  sql.NullInt32
 	Birthdate sql.NullTime

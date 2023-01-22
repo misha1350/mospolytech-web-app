@@ -25,19 +25,29 @@ func logOutput() {
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 }
 
-// func registrationsHandler(c *gin.Context) {
-// 	c.Request.ParseForm()
-// 	if c.Request.FormValue("email") == "" || c.Request.FormValue("password") == "" {
-// 		fmt.Fprintf(c.Writer, "Please enter a valid email and password.\r\n")
-// 	} else {
-// 		response, err := middleware.RegisterUser(c.Request.FormValue("email"), c.Request.FormValue("password"))
-// 		if err != nil {
-// 			fmt.Fprint(c.Writer, err.Error())
-// 		} else {
-// 			fmt.Fprint(c.Writer, response)
-// 		}
-// 	}
-// }
+func registrationsHandler(c *gin.Context) {
+	// Email := c.Request.FormValue("email")
+	// FirstName := c.Request.FormValue("firstname")
+	// LastName := c.Request.FormValue("lastname")
+	// Birthdate := c.Request.FormValue("birthdate")
+	// Office := c.Request.FormValue("office")
+	// Password := c.Request.FormValue("password")
+	userDetails := map[string]interface{}{
+		"email":     c.Request.FormValue("email"),
+		"firstname": c.Request.FormValue("firstname"),
+		"lastname":  c.Request.FormValue("lastname"),
+		"birthdate": c.Request.FormValue("birthdate"),
+		"office":    c.Request.FormValue("office"),
+		"password":  c.Request.FormValue("password"),
+	}
+	log.Println(userDetails["email"], userDetails["firstname"], userDetails["lastname"], userDetails["birthdate"], userDetails["office"], userDetails["password"])
+	response, err := middleware.RegisterUser(userDetails)
+	if err != nil {
+		fmt.Fprint(c.Writer, err.Error())
+	} else {
+		fmt.Fprint(c.Writer, response)
+	}
+}
 
 func authenticationsHandler(c *gin.Context) {
 	email, password := c.Request.FormValue("email"), c.Request.FormValue("password")
@@ -113,6 +123,13 @@ func main() {
 		fmt.Println("ok")
 	})
 
+	server.POST("/login", func(context *gin.Context) {
+		email := context.PostForm("email")
+		password := context.PostForm("password")
+		log.Println(context.Writer, "email is %s and password is %s", email, password)
+		authenticationsHandler(context)
+	})
+
 	server.GET("/register", func(context *gin.Context) {
 		context.HTML(
 			http.StatusOK,
@@ -120,38 +137,21 @@ func main() {
 			gin.H{"title": "Register Page"})
 	})
 
-	server.POST("/login", func(context *gin.Context) {
-		email := context.PostForm("email")
-		password := context.PostForm("password")
-		log.Println(context.Writer, "email is %s and password is %s", email, password)
-		authenticationsHandler(context)
+	server.POST("/register", func(context *gin.Context) {
+		// email := context.PostForm("email")
+		// firstname := context.PostForm("firstname")
+		// lastname := context.PostForm("lastname")
+		// birthdate := context.PostForm("birthdate")
+		// office := context.PostForm("office")
+		// password := context.PostForm("password")
+		// log.Println(context.Writer, email, firstname, lastname, birthdate, office, password)
+		registrationsHandler(context)
+		// // Return to Login Page
+		// context.HTML(
+		// 	http.Status,
+		// 	"login.html",
+		// 	gin.H{"title": "Login Page"})
 	})
-	// useless code for now
-	// server.POST("/login", func(context *gin.Context) {
-	// 	login := context.PostForm("login")
-	// 	password := context.PostForm("password")
-	// 	fmt.Fprintf(context.Writer, "login is %s and password is %s", login, password)
-	// 	fmt.Fprintf(context.Writer, "\nshould return '%T' and '%T'", login, password)
-	// })
 
 	server.Run("127.0.0.1:8082") // listen and serve on this address
-
-	// sqlc connection to database method
-
-	// GORM connection to database method
-
-	// dsn := "root:123qwe@tcp(127.0.0.1:3306/session1_xx)"
-	// gormDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	// if err != nil {
-	// 	log.Fatal("Unable to open connection to the database.")
-	// }
-
-	// database/sql connection to database method
-
-	// fmt.Println("Using SQL driver:", sql.Drivers())
-	// db, err := sql.Open("mysql", "root:123qwe@tcp(127.0.0.1:3306)/session1_xx")
-	// if err != nil {
-	// 	log.Fatal("Unable to open connection to the database.")
-	// }
-	// defer db.Close()
 }

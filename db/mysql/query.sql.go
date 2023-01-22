@@ -50,7 +50,7 @@ INSERT INTO users (
 type AddUserParams struct {
 	Email     string
 	Password  string
-	Firstname sql.NullString
+	Firstname string
 	Lastname  string
 	Officeid  sql.NullInt32
 	Birthdate sql.NullTime
@@ -411,7 +411,7 @@ WHERE ID = ?
 type UpdateUserParams struct {
 	Roleid    int32
 	Email     string
-	Firstname sql.NullString
+	Firstname string
 	Lastname  string
 	Officeid  sql.NullInt32
 	ID        int32
