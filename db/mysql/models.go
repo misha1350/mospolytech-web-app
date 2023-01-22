@@ -9,6 +9,14 @@ import (
 	"time"
 )
 
+type AuthenticationToken struct {
+	Tokenid     int64
+	Userid      int32
+	Authtoken   string
+	Generatedat time.Time
+	Expiresat   time.Time
+}
+
 type Country struct {
 	ID   int32
 	Name string

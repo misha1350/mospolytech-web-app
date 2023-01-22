@@ -88,3 +88,15 @@ WHERE ID = ?;
 -- name: DeleteTracking :exec
 DELETE FROM tracking
 WHERE ID = ?;
+
+-- name: GetUsernameAndPassword :one
+SELECT Email, Password FROM users
+WHERE Email = ? LIMIT 1;
+
+
+-- name: InsertAuthToken :exec
+INSERT INTO authentication_tokens (
+  UserID, AuthToken, GeneratedAt, ExpiresAt
+) VALUES (
+  ?, ?, ?, ?
+);

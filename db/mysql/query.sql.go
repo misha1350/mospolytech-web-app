@@ -246,6 +246,23 @@ func (q *Queries) GetUserToUpdate(ctx context.Context, id int32) (User, error) {
 	return i, err
 }
 
+const getUsernameAndPassword = `-- name: GetUsernameAndPassword :one
+SELECT Email, Password FROM users
+WHERE Email = ? LIMIT 1
+`
+
+type GetUsernameAndPasswordRow struct {
+	Email    string
+	Password string
+}
+
+func (q *Queries) GetUsernameAndPassword(ctx context.Context, email string) (GetUsernameAndPasswordRow, error) {
+	row := q.db.QueryRowContext(ctx, getUsernameAndPassword, email)
+	var i GetUsernameAndPasswordRow
+	err := row.Scan(&i.Email, &i.Password)
+	return i, err
+}
+
 const getUsers = `-- name: GetUsers :many
 SELECT id, roleid, email, password, firstname, lastname, officeid, birthdate, active FROM users
 ORDER BY ID
@@ -282,6 +299,31 @@ func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const insertAuthToken = `-- name: InsertAuthToken :exec
+INSERT INTO authentication_tokens (
+  UserID, AuthToken, GeneratedAt, ExpiresAt
+) VALUES (
+  ?, ?, ?, ?
+)
+`
+
+type InsertAuthTokenParams struct {
+	Userid      int32
+	Authtoken   string
+	Generatedat time.Time
+	Expiresat   time.Time
+}
+
+func (q *Queries) InsertAuthToken(ctx context.Context, arg InsertAuthTokenParams) error {
+	_, err := q.db.ExecContext(ctx, insertAuthToken,
+		arg.Userid,
+		arg.Authtoken,
+		arg.Generatedat,
+		arg.Expiresat,
+	)
+	return err
 }
 
 const listCountries = `-- name: ListCountries :many

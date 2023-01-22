@@ -49,3 +49,13 @@ CREATE TABLE `tracking` (
   KEY `FK_Tracking_Users` (`UserID`),
   CONSTRAINT `FK_Tracking_Users` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
+
+CREATE TABLE `authentication_tokens` (
+  `TokenID` BIGINT NOT NULL AUTO_INCREMENT,
+  `UserID` int(11) NOT NULL,
+  `AuthToken` varchar(255) COLLATE utf8_bin NOT NULL,
+  `GeneratedAt` datetime NOT NULL,
+  `ExpiresAt` datetime NOT NULL,
+  PRIMARY KEY (`TokenID`),
+  CONSTRAINT `FK_Authentication_Tokens_Users` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
