@@ -4,6 +4,8 @@ import (
 	"context"
 	"crypto/md5"
 	"database/sql"
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"log"
 
@@ -33,7 +35,6 @@ func GenerateToken(email string, password string) (map[string]interface{}, error
 		return nil, err
 	}
 	log.Println(user)
-	log.Println(user.Email, user.Password)
 	// Does user exist in the database?
 	// queryString := "select user_id, password from system_users where username = ?"
 	// stmt, err := db.Prepare(queryString)
@@ -52,13 +53,15 @@ func GenerateToken(email string, password string) (map[string]interface{}, error
 	// 	return nil, err
 	// }
 	// compare md5 hashes
-	hash := md5.Sum([]byte(password))
-	fmt.Printf("Supplied password's hash:\t%v\n", string(hash[:]))
-	fmt.Printf("User's E-Mail:\t\t\t%v\n", user.Email)
-	fmt.Printf("User's password's hash:\t\t%v\n", user.Password)
-	if user.Password != string(hash[:]) {
+	// hash := md5.Sum([]byte(password))
+	hasher := md5.New()
+	hasher.Write([]byte(password))
+	// fmt.Printf("Supplied password's hash:\t%v\n", hex.EncodeToString(hasher.Sum(nil)))
+	// fmt.Printf("User's E-Mail:\t\t\t%v\n", user.Email)
+	// fmt.Printf("User's password's hash:\t\t%v\n", user.Password)
+	if user.Password != hex.EncodeToString(hasher.Sum(nil)) {
 		fmt.Println("Invalid username or password.\r")
-		// return nil, errors.New("Invalid username or password.\r\n")
+		return nil, errors.New("auth error - invalid username or password")
 	} else {
 		fmt.Println("User is authenticated.\r")
 	}

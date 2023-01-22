@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 
@@ -24,19 +25,19 @@ func logOutput() {
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 }
 
-func registrationsHandler(c *gin.Context) {
-	c.Request.ParseForm()
-	if c.Request.FormValue("email") == "" || c.Request.FormValue("password") == "" {
-		fmt.Fprintf(c.Writer, "Please enter a valid email and password.\r\n")
-	} else {
-		response, err := middleware.RegisterUser(c.Request.FormValue("email"), c.Request.FormValue("password"))
-		if err != nil {
-			fmt.Fprint(c.Writer, err.Error())
-		} else {
-			fmt.Fprint(c.Writer, response)
-		}
-	}
-}
+// func registrationsHandler(c *gin.Context) {
+// 	c.Request.ParseForm()
+// 	if c.Request.FormValue("email") == "" || c.Request.FormValue("password") == "" {
+// 		fmt.Fprintf(c.Writer, "Please enter a valid email and password.\r\n")
+// 	} else {
+// 		response, err := middleware.RegisterUser(c.Request.FormValue("email"), c.Request.FormValue("password"))
+// 		if err != nil {
+// 			fmt.Fprint(c.Writer, err.Error())
+// 		} else {
+// 			fmt.Fprint(c.Writer, response)
+// 		}
+// 	}
+// }
 
 func authenticationsHandler(c *gin.Context) {
 	email, password := c.Request.FormValue("email"), c.Request.FormValue("password")
@@ -112,10 +113,17 @@ func main() {
 		fmt.Println("ok")
 	})
 
+	server.GET("/register", func(context *gin.Context) {
+		context.HTML(
+			http.StatusOK,
+			"register.html",
+			gin.H{"title": "Register Page"})
+	})
+
 	server.POST("/login", func(context *gin.Context) {
 		email := context.PostForm("email")
 		password := context.PostForm("password")
-		fmt.Fprintf(context.Writer, "email is %s and password is %s\n", email, password)
+		log.Println(context.Writer, "email is %s and password is %s", email, password)
 		authenticationsHandler(context)
 	})
 	// useless code for now

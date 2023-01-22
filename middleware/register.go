@@ -8,7 +8,7 @@ import (
 )
 
 func RegisterUser(username string, password string) (string, error) {
-	db, err := sql.Open("mysql", "sample_db_user:EXAMPLE_PASSWORD@tcp(127.0.0.1:3306)/sample_db")
+	db, err := sql.Open("mysql", "root:123qwe@tcp(127.0.0.1:3306)/session1_xx")
 	if err != nil {
 		return "", err
 	}
@@ -27,3 +27,5 @@ func RegisterUser(username string, password string) (string, error) {
 	return "Success\r\n", nil
 
 }
+
+// func RegisterUser2()

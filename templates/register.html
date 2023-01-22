@@ -1,0 +1,74 @@
+{{ template "header.html" }}
+<script  src="./js/script.js"></script>
+<h1>789</h1>
+<h2>salutations from register.html</h2>
+<br />
+
+<form action="/register" method="post">
+
+    <div class="container" style="border: 1px solid lightgray; border-radius: 3px;padding: 15px;">
+
+      {{if .content}}
+      <div class="notification is-danger is-light">
+        {{.content}}
+      </div>
+
+      {{end}}
+
+      <div class="field">
+        <label class="label">Email address</label>
+        <div class="control">
+          <input class="input" type="text" placeholder="Enter Username" name="email" required>
+        </div>
+      </div>
+      
+      <div class="field">
+        <label class="label">First Name</label>
+        <div class="control">
+          <input class="input" type="text" placeholder="Enter Username" name="email" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Last Name</label>
+        <div class="control">
+          <input class="input" type="text" placeholder="Enter Username" name="email" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Birthdate</label>
+        <div class="control">
+          <input class="input" type="datetime-local" placeholder="[ dd/mm/yy ]" name="birthdate" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Office</label>
+        <div class="control">
+          <select name="office" >
+            <option value="1">Office Name</option>
+            <option value="2">Office 1</option>
+            <option value="3">Office 2</option>
+            <option value="4">Office 3</option>
+          </select>
+        </div>
+      </div>
+
+
+      <div class="field">
+        <label class="label">Password</label>
+        <div class="control">
+          <input class="input" type="password" placeholder="Enter Password" name="password" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <button class="button is-link">Submit</button>
+      </div>
+
+    </div>
+  </form>
+
+{{ template "footer.html" }}
+
