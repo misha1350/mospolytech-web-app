@@ -123,6 +123,10 @@ func main() {
 		fmt.Println("ok")
 	})
 
+	server.GET("/img/DS2017_TP09_2_colors_with_bg_4x.png", func(context *gin.Context) {
+		context.File("./templates/img/DS2017_TP09_2_colors_with_bg_4x.png")
+	})
+
 	server.POST("/login", func(context *gin.Context) {
 		email := context.PostForm("email")
 		password := context.PostForm("password")

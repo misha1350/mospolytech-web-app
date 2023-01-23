@@ -1,12 +1,11 @@
 {{ template "header.html" }}
 <script  src="./js/script.js"></script>
 <h1>456</h1>
-<h2>greetings from login.html</h2>
-<br />
+<h3 style="text-align: center; font-size: 45px">Log In</h3>
 
-<form action="/login" method="post">
+<form action="/login" method="post" >
 
-    <div class="container" style="border: 1px solid lightgray; border-radius: 3px;padding: 15px;">
+    <div class="container" style="border: 1px solid gray; border-radius: 3px; padding: 15px; text-align: center; width: 700px; height: auto; margin: 0 auto">
 
       {{if .content}}
       <div class="notification is-danger is-light">
@@ -15,22 +14,30 @@
 
       {{end}}
 
-      <div class="field">
-        <label class="label">Email</label>
+      <img src="img/DS2017_TP09_2_colors_with_bg_4x.png" style="width: 600px; height: auto" alt="amonic">
+
+      <div style="display: grid; grid-template-columns: 75px 200px; justify-content: center; align-items: center; margin-top: 20px; row-gap: 15px">
+
+        <label class="label" style="text-align: left">Username:</label>
         <div class="control">
-          <input class="input" type="text" placeholder="Enter Username" name="email" required>
+          <input class="input" style="width: 200px" type="text" placeholder="Enter username" name="email" required>
+        </div>
+
+        <label class="label" style="text-align: left">Password:</label>
+        <div class="control">
+          <input class="input" style="width: 200px; " type="password" placeholder="Enter password" name="password" required>
         </div>
       </div>
 
-      <div class="field">
-        <label class="label">Password</label>
-        <div class="control">
-          <input class="input" type="password" placeholder="Enter Password" name="password" required>
-        </div>
-      </div>
-
-      <div class="field">
-        <button class="button is-link">Submit</button>
+      <div class="field" style=" width: 275px; margin: 15px auto 0 auto; display: flex; gap: 15px">
+        <button class="button is-link"
+                style="border: 1px solid black; background: #ffffff; padding: 2px; font-size: 14px; width: inherit; cursor: pointer;">
+          Login
+        </button>
+        <button class="button is-link"
+                style="border: 1px solid black; background: #ffffff; padding: 2px; font-size: 14px; width: inherit; cursor: pointer">
+          Exit
+        </button>
       </div>
 
     </div>
