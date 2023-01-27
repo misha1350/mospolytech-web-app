@@ -1,10 +1,6 @@
 package main
 
 import (
-
-	// "gorm.io/driver/mysql"
-	// "gorm.io/gorm"
-
 	"encoding/json"
 	"fmt"
 	"io"
@@ -20,18 +16,12 @@ import (
 
 func logOutput() {
 	f, _ := os.Create("access.log")
-	// persistent logs can grow extremely large with this:
+	// // persistent logs can grow extremely large with this:
 	// f, _ := os.OpenFile("access.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 }
 
 func registrationsHandler(c *gin.Context) {
-	// Email := c.Request.FormValue("email")
-	// FirstName := c.Request.FormValue("firstname")
-	// LastName := c.Request.FormValue("lastname")
-	// Birthdate := c.Request.FormValue("birthdate")
-	// Office := c.Request.FormValue("office")
-	// Password := c.Request.FormValue("password")
 	userDetails := map[string]interface{}{
 		"email":     c.Request.FormValue("email"),
 		"firstname": c.Request.FormValue("firstname"),
@@ -100,8 +90,6 @@ func main() {
 	// from the disk again. This makes serving HTML pages very fast.
 	server.LoadHTMLGlob("templates/*.html")
 
-	// gindump.Dump()
-
 	server.GET("/ping", func(context *gin.Context) {
 		context.JSON(200, gin.H{
 			"message": "pong",
@@ -142,19 +130,7 @@ func main() {
 	})
 
 	server.POST("/register", func(context *gin.Context) {
-		// email := context.PostForm("email")
-		// firstname := context.PostForm("firstname")
-		// lastname := context.PostForm("lastname")
-		// birthdate := context.PostForm("birthdate")
-		// office := context.PostForm("office")
-		// password := context.PostForm("password")
-		// log.Println(context.Writer, email, firstname, lastname, birthdate, office, password)
 		registrationsHandler(context)
-		// // Return to Login Page
-		// context.HTML(
-		// 	http.Status,
-		// 	"login.html",
-		// 	gin.H{"title": "Login Page"})
 	})
 
 	server.Run("127.0.0.1:8082") // listen and serve on this address
