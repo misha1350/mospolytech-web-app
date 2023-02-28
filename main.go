@@ -31,6 +31,7 @@ func registrationsHandler(c *gin.Context) {
 		"password":  c.Request.FormValue("password"),
 	}
 	log.Println(userDetails["email"], userDetails["firstname"], userDetails["lastname"], userDetails["birthdate"], userDetails["office"], userDetails["password"])
+
 	response, err := middleware.RegisterUser(userDetails)
 	if err != nil {
 		fmt.Fprint(c.Writer, err.Error())
@@ -72,7 +73,7 @@ func authenticationsHandler(c *gin.Context) {
 
 func main() {
 
-	logOutput()
+	//logOutput()
 	server := gin.New()
 	server.Use(
 		gin.Recovery(),
@@ -118,7 +119,7 @@ func main() {
 	server.POST("/login", func(context *gin.Context) {
 		email := context.PostForm("email")
 		password := context.PostForm("password")
-		log.Println(context.Writer, "email is %s and password is %s", email, password)
+		log.Println(context.Writer, "email is ", email, "and password is ", password)
 		authenticationsHandler(context)
 	})
 

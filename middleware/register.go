@@ -1,44 +1,52 @@
 package middleware
 
 import (
+	"context"
+	"database/sql"
+	"fmt"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
+	"gitlab.com/misha1350/mospolytech-web-app/db/mysql"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func RegisterUser(userDetails map[string]interface{}) (string, error) {
-	// ctx := context.Background()
+	ctx := context.Background()
 
-	// db, err := sql.Open("mysql", "root:123qwe@tcp(127.0.0.1:3306)/session1_xx")
-	// if err != nil {
-	// 	return "", err
-	// }
+	db, err := sql.Open("mysql", "root:123qwe@tcp(127.0.0.1:3306)/session1_xx")
+	if err != nil {
+		return "", err
+	}
 
-	// queries := mysql.New(db)
+	queries := mysql.New(db)
 
-	office := userDetails["officeid"].(int32)
+	office := userDetails["office"]
 	log.Printf("%v, %T", office, office)
-	// result, err := queries.AddUser(ctx, mysql.AddUserParams{
-	// 	Email:     userDetails["email"].(string),
-	// 	Password:  userDetails["password"].(string),
-	// 	Firstname: userDetails["firstname"].(string),
-	// 	Lastname:  userDetails["lastname"].(string),
-	// 	Officeid:  userDetails["officeid"].(int32),
-	// 	Birthdate: userDetails["birthdate"].(time.Time),
-	// })
-	// Use addUser function to add user to database from db/mysql/query.sql
-	// queryString := "insert into system_users(username, password) values (?, ?)"
-	// stmt, err := db.Prepare(queryString)
-	// if err != nil {
-	// 	return "", err
-	// }
-	// defer stmt.Close()
 
-	// hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), 14)
+	//TODO:
+	//fix the userDetails["office"] type (it's a string, but it should be int32)
+	//fix the userDetails["birthdate"] type (it's a string, but (i guess) it should be time.Time)
+
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(fmt.Sprint(userDetails["password"])), 14)
+	fmt.Printf("debug: %v, %T", string(hashedPassword), string(hashedPassword))
+
+	result, err := queries.AddUser(ctx, mysql.AddUserParams{
+		Email:     userDetails["email"].(string),
+		Password:  string(hashedPassword),
+		Firstname: userDetails["firstname"].(string),
+		Lastname:  userDetails["lastname"].(string),
+		Officeid:  userDetails["office"].(sql.NullInt32),
+		Birthdate: userDetails["birthdate"].(sql.NullTime),
+	})
+	if err != nil {
+		return "", err
+	}
+	fmt.Println("debug RESULT: ", result)
 	// _, err = stmt.Exec(username, hashedPassword)
-	// if err != nil {
-	// 	return "", err
-	// }
+	if err != nil {
+		return "", err
+	}
 	return "Success\r\n", nil
 
 }

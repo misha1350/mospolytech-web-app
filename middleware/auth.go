@@ -13,12 +13,6 @@ import (
 	"gitlab.com/misha1350/mospolytech-web-app/db/mysql"
 )
 
-// func BasicAuth() gin.HandlerFunc {
-// 	return gin.BasicAuth(gin.Accounts{
-// 		"admin": "admin123",
-// 	})
-// }
-
 func GenerateToken(email string, password string) (map[string]interface{}, error) {
 	ctx := context.Background()
 
