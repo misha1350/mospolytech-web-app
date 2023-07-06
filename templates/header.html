@@ -5,7 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="/css">
+
+    <!-- This does not work and I have absolutely no idea why (certified backend dev moment):
+        <link rel="stylesheet" href="/css/index.css"> 
+        
+        But this does, so might as well use header.html as index.css: -->
+    <style type="text/css">
+        body {
+            margin: 40px auto;
+            max-width: 650px;
+            line-height: 1.6;
+            font-size: 18px;
+            color: #444;
+            padding: 0 10px;
+            background-color: #eeeeee;
+        }
+
+        h1,h2,h3 {
+            line-height: 1.2
+        }
+    </style>
+    
 </head>
 <body>
     hello from header.html

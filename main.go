@@ -81,9 +81,6 @@ func main() {
 		// middleware.BasicAuth(),
 	)
 
-	//serve css
-	server.StaticFile("/css/", "./templates/css/index.css")
-
 	//serve javascript
 	server.StaticFile("/js/script.js", "./templates/js/script.js")
 
@@ -134,5 +131,5 @@ func main() {
 		registrationsHandler(context)
 	})
 
-	server.Run("127.0.0.1:8082") // listen and serve on this address
+	server.Run("127.0.0.1:8086") // listen and serve on this address
 }
