@@ -74,6 +74,7 @@ func authenticationsHandler(c *gin.Context) {
 func main() {
 
 	//logOutput()
+	// A new "server" is created with this
 	server := gin.New()
 	server.Use(
 		gin.Recovery(),
@@ -88,8 +89,9 @@ func main() {
 	// from the disk again. This makes serving HTML pages very fast.
 	server.LoadHTMLGlob("templates/*.html")
 
+	// "server.GET" takes the URI to match the HTTP GET request, and the callback function in the form of a Gin Context struct to be executed
 	server.GET("/ping", func(context *gin.Context) {
-		context.JSON(200, gin.H{
+		context.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
 	})
