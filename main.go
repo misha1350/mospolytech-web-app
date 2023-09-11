@@ -16,7 +16,7 @@ import (
 
 func logOutput() {
 	f, _ := os.Create("access.log")
-	// // persistent logs can grow extremely large with this:
+	// persistent logs can grow extremely large with this:
 	// f, _ := os.OpenFile("access.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 }
