@@ -52,8 +52,8 @@ type AddUserParams struct {
 	Password  string
 	Firstname string
 	Lastname  string
-	Officeid  sql.NullInt32
-	Birthdate sql.NullTime
+	Officeid  int32
+	Birthdate time.Time
 }
 
 func (q *Queries) AddUser(ctx context.Context, arg AddUserParams) (sql.Result, error) {
@@ -413,7 +413,7 @@ type UpdateUserParams struct {
 	Email     string
 	Firstname string
 	Lastname  string
-	Officeid  sql.NullInt32
+	Officeid  int32
 	ID        int32
 }
 

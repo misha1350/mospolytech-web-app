@@ -52,7 +52,7 @@ type User struct {
 	Password  string
 	Firstname string
 	Lastname  string
-	Officeid  sql.NullInt32
-	Birthdate sql.NullTime
+	Officeid  int32
+	Birthdate time.Time
 	Active    sql.NullBool
 }
