@@ -24,7 +24,7 @@ CREATE TABLE `users` (
   `ID` int(11) NOT NULL,
   `RoleID` int(11) NOT NULL,
   `Email` varchar(150) COLLATE utf8_bin NOT NULL,
-  `Password` varchar(50) COLLATE utf8_bin NOT NULL,
+  `Password` varchar(255) COLLATE utf8_bin NOT NULL,
   `FirstName` varchar(50) COLLATE utf8_bin NOT NULL,
   `LastName` varchar(50) COLLATE utf8_bin NOT NULL,
   `OfficeID` int(11) NOT NULL,
