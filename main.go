@@ -34,8 +34,10 @@ func registrationsHandler(c *gin.Context) {
 
 	response, err := middleware.RegisterUser(userDetails)
 	if err != nil {
-		fmt.Fprint(c.Writer, err.Error())
+		c.Writer.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(c.Writer, response, err.Error())
 	} else {
+		c.Writer.WriteHeader(http.StatusCreated)
 		fmt.Fprint(c.Writer, response)
 	}
 }
@@ -45,19 +47,34 @@ func authenticationsHandler(c *gin.Context) {
 	if email != "" || password != "" {
 		tokenDetails, err := middleware.GenerateToken(email, password)
 		if err != nil {
-			c.Writer.WriteHeader(http.StatusUnauthorized)
+			c.Writer.WriteHeader(http.StatusNotFound)
 			fmt.Fprint(c.Writer, err.Error())
 			return
 		} else {
 			enc := json.NewEncoder(c.Writer)
 			enc.SetIndent("", "  ")
 			enc.Encode(tokenDetails)
+			c.SetSameSite(http.SameSiteLaxMode)
+			c.SetCookie("Authorization", tokenDetails["token"].(string), 3600*24*7, "/", "localhost", false, true)
 		}
 	} else {
 		c.Writer.WriteHeader(http.StatusUnauthorized)
 		fmt.Fprintf(c.Writer, "\nUsername and password are required to get a token.\n")
 	}
 }
+
+// func validationsHandler(c *gin.Context) {
+// 	authToken, err := c.Cookie("Authorization")
+// 	userDetails, err := middleware.ValidateToken(authToken)
+// 	if err != nil {
+// 		c.Writer.WriteHeader(http.StatusUnauthorized)
+// 		fmt.Fprint(c.Writer, err.Error())
+// 	} else {
+// 		enc := json.NewEncoder(c.Writer)
+// 		enc.SetIndent("", "  ")
+// 		enc.Encode(userDetails)
+// 	}
+// }
 
 // func testResourceHandler(c *gin.Context) {
 // 	authToken := strings.Split(c.Request.Header.Get("Authorization"), "Bearer ")[1]
@@ -74,12 +91,11 @@ func authenticationsHandler(c *gin.Context) {
 func main() {
 
 	//logOutput()
-	// A new "server" is created with this
+	// A new "server" instance is created with this
 	server := gin.New()
 	server.Use(
 		gin.Recovery(),
 		middleware.Logger(),
-		// middleware.BasicAuth(),
 	)
 
 	//serve javascript

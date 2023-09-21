@@ -60,9 +60,9 @@ WHERE ID = ?;
 DELETE FROM users
 WHERE ID = ?;
 
--- name: FindUserByEmail :one
-SELECT * FROM users
-WHERE Email = ? LIMIT 1;
+-- -- name: FindUserByEmail :one
+-- SELECT * FROM users
+-- WHERE Email = ? LIMIT 1;
 
 -- name: GetTracking :many
 SELECT * FROM tracking
@@ -89,10 +89,9 @@ WHERE ID = ?;
 DELETE FROM tracking
 WHERE ID = ?;
 
--- name: GetUsernameAndPassword :one
-SELECT Email, Password FROM users
+-- name: GetUserData :one
+SELECT ID, RoleID, Email, Password, OfficeID, FirstName, LastName, Active FROM users
 WHERE Email = ? LIMIT 1;
-
 
 -- name: InsertAuthToken :exec
 INSERT INTO authentication_tokens (
@@ -100,3 +99,8 @@ INSERT INTO authentication_tokens (
 ) VALUES (
   ?, ?, ?, ?
 );
+
+-- name: GetLatestAuthToken :one
+SELECT * FROM authentication_tokens
+WHERE UserID = ?
+ORDER BY GeneratedAt DESC LIMIT 1;

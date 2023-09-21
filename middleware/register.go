@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"strconv"
 	"time"
@@ -15,25 +14,32 @@ import (
 func RegisterUser(userDetails map[string]interface{}) (string, error) {
 	ctx := context.Background()
 
-	db, err := sql.Open("mysql", "root:123qwe@tcp(127.0.0.1:3306)/session1_xx")
+	db, err := DbConnect()
 	if err != nil {
-		return "", err
+		return "Database connection failed", err
 	}
 	queries := mysql.New(db)
 
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(fmt.Sprint(userDetails["password"])), 14)
+	_, err = queries.GetUserData(ctx, userDetails["email"].(string))
+	if err == nil {
+		return "User already exists", err
+	}
 
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(fmt.Sprint(userDetails["password"])), 14)
+	if err != nil {
+		return "Password hashing failed", err
+	}
 	parsedOfficeID, err := strconv.ParseInt(userDetails["office"].(string), 10, 32)
 	if err != nil {
-		return "", err
+		return "OfficeID parsing failed", err
 	}
 
 	parsedBirthdate, err := time.Parse("2006-01-02", userDetails["birthdate"].(string)) // adjust the layout string according to the format of your date string
 	if err != nil {
-		return "", err
+		return "Birthdate parsing failed", err
 	}
 
-	queries.AddUser(ctx, mysql.AddUserParams{
+	_, err = queries.AddUser(ctx, mysql.AddUserParams{
 		// RoleID is set to 1 by default in "db/query.sql"
 		Email:     userDetails["email"].(string),
 		Password:  string(hashedPassword),
@@ -44,11 +50,8 @@ func RegisterUser(userDetails map[string]interface{}) (string, error) {
 		// Active is set to 1 by default in "db/query.sql"
 	})
 	if err != nil {
-		return "", err
+		return "User creation failed, looks like the developer will have a sleepless night", err
 	}
 
-	if err != nil {
-		return "", err
-	}
 	return "Success\r\n", nil
 }
