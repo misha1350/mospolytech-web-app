@@ -47,16 +47,12 @@ func GenerateToken(email string, password string) (map[string]interface{}, error
 		return nil, errors.New("failed to generate token.\r")
 	}
 
-	fmt.Println(tokenString, err)
-
 	err = queries.InsertAuthToken(ctx, mysql.InsertAuthTokenParams{
 		Userid:      user.ID,
 		Authtoken:   tokenString,
 		Generatedat: time.Now(),
 		Expiresat:   time.Now().Add(time.Hour * 24 * 7),
 	})
-
-	fmt.Println(err)
 
 	if err != nil {
 		return nil, errors.New("failed to write token to database.\r")
@@ -66,7 +62,7 @@ func GenerateToken(email string, password string) (map[string]interface{}, error
 		"token_type":   "Bearer",
 		"token":        tokenString,
 		"generated_at": time.Now().Format("2006-01-02 15:04:05"),
-		"expires_at":   time.Now().Add(time.Hour * 24 * 7).Format("2006-01-02 15:04:05"),
+		"expires_at":   time.Now().Add(time.Hour * 24 * 30).Format("2006-01-02 15:04:05"),
 	}
 
 	return tokenDetails, nil

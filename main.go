@@ -3,10 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"gitlab.com/misha1350/mospolytech-web-app/middleware"
@@ -14,12 +12,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func logOutput() {
-	f, _ := os.Create("access.log")
-	// persistent logs can grow extremely large with this:
-	// f, _ := os.OpenFile("access.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
-}
+// func logOutput() {
+// 	f, _ := os.Create("access.log")
+// 	// persistent logs can grow extremely large with this:
+// 	// f, _ := os.OpenFile("access.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+// 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
+// }
 
 func registrationsHandler(c *gin.Context) {
 	userDetails := map[string]interface{}{
@@ -44,6 +42,7 @@ func registrationsHandler(c *gin.Context) {
 
 func authenticationsHandler(c *gin.Context) {
 	email, password := c.Request.FormValue("email"), c.Request.FormValue("password")
+	fmt.Println(email, password)
 	if email != "" || password != "" {
 		tokenDetails, err := middleware.GenerateToken(email, password)
 		if err != nil {
@@ -51,11 +50,11 @@ func authenticationsHandler(c *gin.Context) {
 			fmt.Fprint(c.Writer, err.Error())
 			return
 		} else {
+			c.SetSameSite(http.SameSiteLaxMode)
+			c.SetCookie("Authorization", tokenDetails["token"].(string), 60*60*24*30, "/", "", false, true)
 			enc := json.NewEncoder(c.Writer)
 			enc.SetIndent("", "  ")
 			enc.Encode(tokenDetails)
-			c.SetSameSite(http.SameSiteLaxMode)
-			c.SetCookie("Authorization", tokenDetails["token"].(string), 3600*24*7, "/", "localhost", false, true)
 		}
 	} else {
 		c.Writer.WriteHeader(http.StatusUnauthorized)
@@ -132,9 +131,6 @@ func main() {
 	})
 
 	server.POST("/login", func(context *gin.Context) {
-		email := context.PostForm("email")
-		password := context.PostForm("password")
-		log.Println(context.Writer, "email is ", email, "and password is ", password)
 		authenticationsHandler(context)
 	})
 
