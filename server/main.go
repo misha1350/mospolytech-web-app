@@ -60,6 +60,7 @@ func authenticationsHandler(c *gin.Context) {
 			enc := json.NewEncoder(c.Writer)
 			enc.SetIndent("", "  ")
 			enc.Encode(tokenDetails)
+			fmt.Print(tokenDetails)
 		}
 	} else {
 		c.Writer.WriteHeader(http.StatusUnauthorized)
