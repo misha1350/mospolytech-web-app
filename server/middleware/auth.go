@@ -9,9 +9,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/golang-jwt/jwt/v5"
-	"gitlab.com/misha1350/mospolytech-web-app/server/db/mysql"
+	"github.com/golang-jwt/jwt"
+	"github.com/misha1350/mospolytech-web-app/db/mysql"
 	"golang.org/x/crypto/bcrypt"
 )
 

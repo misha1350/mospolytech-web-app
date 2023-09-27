@@ -12,9 +12,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"gitlab.com/misha1350/mospolytech-web-app/server/middleware"
-
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/misha1350/mospolytech-web-app/middleware"
 )
 
 // func logOutput() {
