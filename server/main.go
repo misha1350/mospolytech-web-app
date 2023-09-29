@@ -101,28 +101,30 @@ func main() {
 		middleware.Logger(),
 	)
 
-	router.StaticFile("/css/styles.css", "./templates/css/styles.css")
+	router.StaticFile("/api/server/css/styles.css", "./templates/css/styles.css")
 	// router.Static("/vue", ".vue-project/src/App.vue")
 
 	// Process the templates at the start so that they don't have to be loaded
 	// from the disk again. This makes serving HTML pages very fast.
 	router.LoadHTMLGlob("templates/*.html")
 
-	// "router.GET" takes the URI to match the HTTP GET request, and the callback function in the form of a Gin Context struct to be executed
-	router.GET("/ping", func(context *gin.Context) {
+	// "router.GET" takes the URI to match the HTTP GET request, and the callback function in the form of a Gin Context struct to be executed.
+	// "/api/server" is needed for Traefik to route the request to the server, according to the rule that you set in docker-compose.yml
+	//
+	router.GET("/api/server/ping", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
 	})
 
-	router.GET("/", func(context *gin.Context) {
+	router.GET("/api/server/", func(context *gin.Context) {
 		context.HTML(
 			http.StatusOK,
 			"index.html",
 			gin.H{"title": "Home Page"})
 	})
 
-	router.GET("/login", func(context *gin.Context) {
+	router.GET("/api/server/login", func(context *gin.Context) {
 		context.HTML(
 			http.StatusOK,
 			"login.html",
@@ -130,27 +132,31 @@ func main() {
 		fmt.Println("ok")
 	})
 
-	router.GET("/img/DS2017_TP09_2_colors_with_bg_4x.png", func(context *gin.Context) {
+	router.GET("/api/server/img/DS2017_TP09_2_colors_with_bg_4x.png", func(context *gin.Context) {
 		context.File("./templates/img/DS2017_TP09_2_colors_with_bg_4x.png")
 	})
 
-	router.POST("/login", func(context *gin.Context) {
+	router.POST("/api/server/login", func(context *gin.Context) {
 		authenticationsHandler(context)
 	})
 
-	router.GET("/register", func(context *gin.Context) {
+	router.GET("/api/server/register", func(context *gin.Context) {
 		context.HTML(
 			http.StatusOK,
 			"register.html",
 			gin.H{"title": "Register Page"})
 	})
 
-	router.POST("/register", func(context *gin.Context) {
+	router.POST("/api/server/register", func(context *gin.Context) {
 		registrationsHandler(context)
 	})
 
+	// I had a great deal of trouble with this - apparently, when dockerizing the application and using Traefik to direct your requests,
+	// you need to only specify the port number. not the entire "127.0.0.1:8086" address. Otherwise, Bad Gateway errors will be thrown.
+	// This is due to Docker configuring the network for you, and the app receives connections from the likes of 172.18.0.1:8086.
+	// Traefik knows better. You should too.
 	srv := &http.Server{
-		Addr:    "127.0.0.1:8086",
+		Addr:    ":8086",
 		Handler: router,
 	}
 
@@ -163,7 +169,7 @@ func main() {
 
 	log.Printf("Listening on port %v\n", srv.Addr)
 
-	quit := make(chan os.Signal)
+	quit := make(chan os.Signal, 1)
 
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 

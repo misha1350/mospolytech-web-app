@@ -8,7 +8,7 @@ services:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedByDefault=false"
-      - "--entrypoints.web.address=:80"
+      # - "--entrypoints.web.address=:80"
     ports:
       # The HTTP port
       - "80:80"
@@ -31,16 +31,21 @@ services:
     build:
       context: ./server
       target: builder
+    env_file: ./server/.env
     image: server-mospolytech
     expose:
       - "8086"
     labels:
       - "traefik.enable=true"
+      # If you set the "/api/server" or other path, then you have to change the "/whatever" endpoints in the backend to "/api/server/whatever"
       - "traefik.http.routers.server-mospolytech.rule=Host(`127.0.0.1`) && PathPrefix(`/api/server`)"
       - "traefik.http.services.server-mospolytech.loadbalancer.server.port=8086"
     environment:
       - ENV=dev
     volumes:
       - ./server:/go/src/app
+    depends_on:
+      - mysql-mospolytech
+    command: go run main.go
 volumes:
   mysql-account:
