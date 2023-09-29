@@ -6,13 +6,14 @@ services:
     # Enables the web UI and tells Traefik to listen to docker
     command:
       - "--api.insecure=true"
-      - "--providers.docker"
+      - "--providers.docker=true"
       - "--providers.docker.exposedByDefault=false"
+      - "--entrypoints.web.address=:80"
     ports:
       # The HTTP port
       - "80:80"
       # The Web UI (enabled by --api.insecure=true)
-      - "8087:8087"
+      - "8080:8080"
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
@@ -25,6 +26,7 @@ services:
       - "3306:3306"
     volumes:
       - "mysql-account:/var/lib/mysql"
+      - "./server/db/data_dump.sql:/docker-entrypoint-initdb.d/data_dump.sql"
   server-mospolytech:
     build:
       context: ./server
@@ -34,11 +36,11 @@ services:
       - "8086"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.server.rule=Host(`127.0.0.1`) && PathPrefix(`/api/server`)"
+      - "traefik.http.routers.server-mospolytech.rule=Host(`127.0.0.1`) && PathPrefix(`/api/server`)"
+      - "traefik.http.services.server-mospolytech.loadbalancer.server.port=8086"
     environment:
       - ENV=dev
     volumes:
       - ./server:/go/src/app
-    command: reflex -r "\.go$$" -s -- sh -c "go run ./"
 volumes:
   mysql-account:
