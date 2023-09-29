@@ -1,0 +1,44 @@
+version: "3"
+services:
+  reverse-proxy:
+    # The official v2 Traefik docker image
+    image: traefik:v2.10
+    # Enables the web UI and tells Traefik to listen to docker
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--providers.docker.exposedByDefault=false"
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8087:8087"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+  mysql-mospolytech:
+    image: "mysql:8.0"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123qwe
+      - MYSQL_DATABASE=session1_xx
+    ports:
+      - "3306:3306"
+    volumes:
+      - "mysql-account:/var/lib/mysql"
+  server-mospolytech:
+    build:
+      context: ./server
+      target: builder
+    image: server-mospolytech
+    expose:
+      - "8086"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.server.rule=Host(`127.0.0.1`) && PathPrefix(`/api/server`)"
+    environment:
+      - ENV=dev
+    volumes:
+      - ./server:/go/src/app
+    command: reflex -r "\.go$$" -s -- sh -c "go run ./"
+volumes:
+  mysql-account:
