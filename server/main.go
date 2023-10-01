@@ -113,7 +113,7 @@ func main() {
 	//
 	router.GET("/api/server/ping", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
-			"message": "pong",
+			"hello": "world",
 		})
 	})
 
