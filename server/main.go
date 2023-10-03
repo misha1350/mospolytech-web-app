@@ -101,7 +101,7 @@ func main() {
 		middleware.Logger(),
 	)
 
-	router.StaticFile("/api/server/css/styles.css", "./templates/css/styles.css")
+	router.StaticFile("/api/server/css/styles2.css", "./templates/css/styles2.css")
 	// router.Static("/vue", ".vue-project/src/App.vue")
 
 	// Process the templates at the start so that they don't have to be loaded
@@ -132,8 +132,12 @@ func main() {
 		fmt.Println("ok")
 	})
 
-	router.GET("/api/server/img/DS2017_TP09_2_colors_with_bg_4x.png", func(context *gin.Context) {
-		context.File("./templates/img/DS2017_TP09_2_colors_with_bg_4x.png")
+	router.GET("/api/server/img/logo_with_colors.png", func(context *gin.Context) {
+		context.File("./templates/img/logo_with_colors.png")
+	})
+
+	router.GET("/api/server/img/logo_transparent.png", func(context *gin.Context) {
+		context.File("./templates/img/logo_transparent.png")
 	})
 
 	router.POST("/api/server/login", func(context *gin.Context) {
