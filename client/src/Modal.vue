@@ -9,26 +9,113 @@ const props = defineProps({
     <div v-if="show" class="modal-mask">
       <div class="modal-container">
         <div class="modal-header">
-          <slot name="header">default header</slot>
+          <slot name="header">Edit Role</slot>
         </div>
 
         <div class="modal-body">
-          <slot name="body">default body</slot>
-        </div>
+          <form @submit.prevent="submitForm">
+            <div class="field">
+              <label class="label">Email address:</label>
+              <div class="control">
+                <input v-model="user.email" type="email" placeholder="Enter Email" name="email" required>
+              </div>
+            </div>
 
-        <div class="modal-footer">
-          <slot name="footer">
-            default footer
-            <button
-              class="modal-default-button"
-              @click="$emit('close')"
-            >OK</button>
-          </slot>
+            <div class="field">
+              <label class="label">First name:</label>
+              <div class="control">
+                <input v-model="user.firstname" type="text" placeholder="Enter First Name" name="firstname" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Last name:</label>
+              <div class="control">
+                <input v-model="user.lastname" type="text" placeholder="Enter Last Name" name="lastname" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Office:</label>
+              <div class="control">
+                <select v-model="user.office" name="office">
+                  <option value="">Select your office</option>
+                  <!-- Add more options as needed -->
+                  <option value="1">Office 1</option>
+                  <option value="2">Office 2</option>
+                  <!-- ... -->
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label">Role:</label>
+              <div class="control">
+                <input type="radio" id="user" value="User" v-model="user.role">
+                <label for="user">User</label><br>
+                <input type="radio" id="admin" value="Administrator" v-model="user.role">
+                <label for="admin">Administrator</label><br>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <slot name="footer">
+                <button type="submit">Apply</button>
+                <button
+                  class="modal-default-button"
+                  @click="$emit('close')"
+                >OK</button>
+              </slot>
+            </div>
+          </form>
+          <div v-if="message" class="message">{{ message }}</div>
         </div>
       </div>
     </div>
   </Transition>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      user: {
+        email: '',
+        firstname: '',
+        lastname: '',
+        office: '',
+        role: 'User',
+      },
+      processing: false,
+      message: '',
+    };
+  },
+  methods: {
+    async submitForm() {
+      this.processing = true;
+      this.message = 'Processing request...';
+
+      const response = await fetch('/api/server/user_edit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(this.user),
+      });
+
+      if (response.ok) {
+        this.message = 'Successfully updated user information.';
+      } else if (response.status === 404) {
+        this.message = 'Cannot establish connection with the backend. (HTTP return code 404)';
+      } else {
+        this.message = `Cannot edit user data in the database. (HTTP return code ${response.status})`;
+      }
+
+      this.processing = false;
+    },
+  },
+};
+</script>
+
 
 <style>
 .modal-mask {

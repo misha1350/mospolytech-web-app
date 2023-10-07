@@ -68,11 +68,11 @@ func GenerateToken(email string, password string) (map[string]interface{}, error
 }
 
 // }
-func ValidateToken(c *gin.Context, authToken string) {
+func ValidateToken(c *gin.Context, authToken string) (map[string]interface{}, error) {
 	//TODO: Validate tokens using the database and a cookie
 	db, err := DbConnect()
 	if err != nil {
-		return
+		return nil, err
 	}
 	queries := mysql.New(db)
 
@@ -80,7 +80,7 @@ func ValidateToken(c *gin.Context, authToken string) {
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		c.Abort()
-		return
+		return nil, &os.LinkError{}
 	}
 	// Parse takes the token string and a function for looking up the key. The latter is especially
 	// useful if you use multiple keys for your application.  The standard is to use 'kid' in the
@@ -93,48 +93,34 @@ func ValidateToken(c *gin.Context, authToken string) {
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return []byte(os.Getenv("SECRET")), nil
+		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "cannot parse token"})
-		c.Abort()
-		return
+		// c.JSON(http.StatusUnauthorized, gin.H{"error": "cannot parse token"})
+		// c.Abort()
+		return nil, err
 	}
 
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		// tokenString := claims["sub"].(string)
+	userDetails := map[string]interface{}{}
 
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		if float64(time.Now().Unix()) > claims["exp"].(float64) {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "token expired"})
-			c.Abort()
-			return
+			return nil, errors.New("token expired")
 		}
 
 		userToken, err := queries.GetAuthToken(c, authToken)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "user not found"})
-			c.Abort()
-			return
+			return nil, errors.New("user not found")
 		}
 
-		// user, err := queries.GetUserData(c, email)
-		// if err != nil {
-		// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "user not found"})
-		// 	c.Abort()
-		// 	return
-		// }
+		// fmt.Println("userToken:", userToken)
+		// fmt.Println("user:", tokenString)
+		// fmt.Println("token:", token)
 
-		fmt.Println("userToken:", userToken)
-		fmt.Println("user:", tokenString)
-		fmt.Println("token:", token)
-
-		// c.Set("user", user)
-
-		c.Next()
 	} else {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
-		c.Abort()
+		return nil, errors.New("unauthorized")
 	}
+	return userDetails, nil
 }
 
 // queryString := `select

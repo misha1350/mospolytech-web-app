@@ -54,7 +54,7 @@ func authenticationsHandler(c *gin.Context) {
 			return
 		} else {
 			c.SetSameSite(http.SameSiteLaxMode)
-			c.SetCookie("Authorization", tokenDetails["token"].(string), 60*60*24*30, "/", "", false, true)
+			c.SetCookie("Authorization", tokenDetails["token"].(string), 60*60*24*30, "/", "localhost", false, true)
 			enc := json.NewEncoder(c.Writer)
 			enc.SetIndent("", "  ")
 			enc.Encode(tokenDetails)
@@ -66,18 +66,17 @@ func authenticationsHandler(c *gin.Context) {
 	}
 }
 
-// func validationsHandler(c *gin.Context) {
-// 	authToken, err := c.Cookie("Authorization")
-// 	userDetails, err := middleware.ValidateToken(authToken)
-// 	if err != nil {
-// 		c.Writer.WriteHeader(http.StatusUnauthorized)
-// 		fmt.Fprint(c.Writer, err.Error())
-// 	} else {
-// 		enc := json.NewEncoder(c.Writer)
-// 		enc.SetIndent("", "  ")
-// 		enc.Encode(userDetails)
-// 	}
-// }
+func validationsHandler(c *gin.Context, token string) {
+	userDetails, err := middleware.ValidateToken(c, token)
+	if err != nil {
+		c.Writer.WriteHeader(http.StatusUnauthorized)
+		fmt.Fprint(c.Writer, err.Error())
+	} else {
+		enc := json.NewEncoder(c.Writer)
+		enc.SetIndent("", "  ")
+		enc.Encode(userDetails)
+	}
+}
 
 // func testResourceHandler(c *gin.Context) {
 // 	authToken := strings.Split(c.Request.Header.Get("Authorization"), "Bearer ")[1]
@@ -153,6 +152,18 @@ func main() {
 
 	router.POST("/api/server/register", func(context *gin.Context) {
 		registrationsHandler(context)
+	})
+
+	//TODO: Add middleware to edit user data
+	router.GET("/api/server/user_edit", func(context *gin.Context) {
+	})
+
+	router.POST("/api/server/check", func(context *gin.Context) {
+		token := context.GetHeader("Authorization")
+		// // tokenString will contain the value of the Authorization header, which should be in the format "Bearer <token>"
+		// // You can extract the token by splitting the string and taking the second part:
+		// token := strings.Split(tokenString, " ")[1]
+		validationsHandler(context, token)
 	})
 
 	// I had a great deal of trouble with this - apparently, when dockerizing the application and using Traefik to direct your requests,

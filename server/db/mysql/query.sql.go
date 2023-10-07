@@ -121,20 +121,20 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 }
 
 const getAuthToken = `-- name: GetAuthToken :one
-SELECT tokenid, userid, authtoken, generatedat, expiresat FROM authentication_tokens
+SELECT TokenID, UserID, AuthToken FROM authentication_tokens
 WHERE AuthToken = ? LIMIT 1
 `
 
-func (q *Queries) GetAuthToken(ctx context.Context, authtoken string) (AuthenticationToken, error) {
+type GetAuthTokenRow struct {
+	Tokenid   int64
+	Userid    int32
+	Authtoken string
+}
+
+func (q *Queries) GetAuthToken(ctx context.Context, authtoken string) (GetAuthTokenRow, error) {
 	row := q.db.QueryRowContext(ctx, getAuthToken, authtoken)
-	var i AuthenticationToken
-	err := row.Scan(
-		&i.Tokenid,
-		&i.Userid,
-		&i.Authtoken,
-		&i.Generatedat,
-		&i.Expiresat,
-	)
+	var i GetAuthTokenRow
+	err := row.Scan(&i.Tokenid, &i.Userid, &i.Authtoken)
 	return i, err
 }
 

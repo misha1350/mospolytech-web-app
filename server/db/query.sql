@@ -93,14 +93,13 @@ WHERE ID = ?;
 SELECT ID, RoleID, Email, Password, OfficeID, FirstName, LastName, Active FROM users
 WHERE Email = ? LIMIT 1;
 
+-- name: GetAuthToken :one
+SELECT TokenID, UserID, AuthToken FROM authentication_tokens
+WHERE AuthToken = ? LIMIT 1;
+
 -- name: InsertAuthToken :exec
 INSERT INTO authentication_tokens (
   UserID, AuthToken, GeneratedAt, ExpiresAt
 ) VALUES (
   ?, ?, ?, ?
 );
-
--- name: GetLatestAuthToken :one
-SELECT * FROM authentication_tokens
-WHERE UserID = ?
-ORDER BY GeneratedAt DESC LIMIT 1;
