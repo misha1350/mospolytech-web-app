@@ -23,7 +23,7 @@ services:
       - MYSQL_ROOT_PASSWORD=123qwe
       - MYSQL_DATABASE=session1_xx
     ports:
-      - "3306:3306"
+      - "3308:3308"
     volumes:
       - "mysql-account:/var/lib/mysql"
       - "./server/db/data_dump.sql:/docker-entrypoint-initdb.d/data_dump.sql"
@@ -52,14 +52,14 @@ services:
     build:
       context: ./client 
     image: client-mospolytech # if we don't give image name, traefik won't create router 🤷‍♂️
-    # TODO: Figure out the correct port to expose in Codespaces (it's 5173 upon running `npm run dev`)
+    # TODO: Fix the Bad Gateway error
     expose:
-      - "5173"
+      - "8087"
     ports:
-      - "5173:5173"
+      - "8087:8087"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.client-mospolytech.rule=Host(`127.0.0.1`) && PathPrefix(`/client/`)"
+      - "traefik.http.routers.client-mospolytech.rule=Host(`127.0.0.1`) && PathPrefix(`/client`)"
     volumes:
       - ./client:/app
       - /app/node_modules #avoid overwriting node_modules

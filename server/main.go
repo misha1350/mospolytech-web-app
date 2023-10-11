@@ -53,8 +53,8 @@ func authenticationsHandler(c *gin.Context) {
 			fmt.Fprint(c.Writer, err.Error())
 			return
 		} else {
-			c.SetSameSite(http.SameSiteLaxMode)
-			c.SetCookie("Authorization", tokenDetails["token"].(string), 60*60*24*30, "/", "localhost", false, false)
+			c.SetSameSite(http.SameSiteNoneMode)
+			c.SetCookie("Authorization", tokenDetails["token"].(string), 60*60*24*30, "/", "127.0.0.1", false, false)
 			enc := json.NewEncoder(c.Writer)
 			enc.SetIndent("", "  ")
 			enc.Encode(tokenDetails)
