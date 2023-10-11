@@ -93,9 +93,13 @@ WHERE ID = ?;
 SELECT ID, RoleID, Email, Password, OfficeID, FirstName, LastName, Active FROM users
 WHERE Email = ? LIMIT 1;
 
+-- name: GetUserDataByID :one
+SELECT ID, RoleID, Email, Password, OfficeID, FirstName, LastName, Active FROM users
+WHERE ID = ? LIMIT 1;
+
 -- name: GetAuthToken :one
 SELECT TokenID, UserID, AuthToken FROM authentication_tokens
-WHERE AuthToken = ? LIMIT 1;
+WHERE UserID = ? ORDER BY GeneratedAt DESC LIMIT 1;
 
 -- name: InsertAuthToken :exec
 INSERT INTO authentication_tokens (

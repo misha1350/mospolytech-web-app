@@ -67,8 +67,8 @@ func GenerateToken(email string, password string) (map[string]interface{}, error
 	return tokenDetails, nil
 }
 
-// }
-func ValidateToken(c *gin.Context, authToken string) (map[string]interface{}, error) {
+// This checks the tokenString sent over from the frontend and should return the user's details
+func ValidateToken(c *gin.Context, tokenString string) (map[string]interface{}, error) {
 	//TODO: Validate tokens using the database and a cookie
 	db, err := DbConnect()
 	if err != nil {
@@ -76,7 +76,6 @@ func ValidateToken(c *gin.Context, authToken string) (map[string]interface{}, er
 	}
 	queries := mysql.New(db)
 
-	tokenString := authToken
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
 		c.Abort()
@@ -86,7 +85,7 @@ func ValidateToken(c *gin.Context, authToken string) (map[string]interface{}, er
 	// useful if you use multiple keys for your application.  The standard is to use 'kid' in the
 	// head of the token to identify which key to use, but the parsed token (head and claims) is provided
 	// to the callback, providing flexibility.
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	givenToken, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -101,26 +100,42 @@ func ValidateToken(c *gin.Context, authToken string) (map[string]interface{}, er
 		return nil, err
 	}
 
-	userDetails := map[string]interface{}{}
+	fmt.Println("Provided token's UserID is:", givenToken.Claims.(jwt.MapClaims)["sub"])
 
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+	if claims, ok := givenToken.Claims.(jwt.MapClaims); ok && givenToken.Valid {
 		if float64(time.Now().Unix()) > claims["exp"].(float64) {
 			return nil, errors.New("token expired")
 		}
 
-		userToken, err := queries.GetAuthToken(c, authToken)
+		givenUserID := int32(claims["sub"].(float64))
+
+		// Find the dbToken.UserID in database from provided token
+		dbToken, err := queries.GetAuthToken(c, givenUserID)
 		if err != nil {
 			return nil, errors.New("user not found")
 		}
 
-		// fmt.Println("userToken:", userToken)
+		fmt.Println("dbToken:", dbToken)
 		// fmt.Println("user:", tokenString)
-		// fmt.Println("token:", token)
+		fmt.Println("givenToken:", givenToken)
 
+		userDetails, err := queries.GetUserDataByID(c, dbToken.Userid)
+		if err != nil {
+			return nil, errors.New("user not found")
+		}
+
+		userDetailsMap := map[string]interface{}{
+			"email":     userDetails.Email,
+			"firstname": userDetails.Firstname,
+			"lastname":  userDetails.Lastname,
+			"office":    userDetails.Officeid,
+			"password":  userDetails.Password,
+		}
+
+		return userDetailsMap, nil
 	} else {
 		return nil, errors.New("unauthorized")
 	}
-	return userDetails, nil
 }
 
 // queryString := `select
@@ -141,7 +156,7 @@ func ValidateToken(c *gin.Context, authToken string) (map[string]interface{}, er
 // username := ""
 // generatedAt := ""
 // expiresAt := ""
-// err = stmt.QueryRow(authToken).Scan(&userId, &username, &generatedAt, &expiresAt)
+// err = stmt.QueryRow(tokenString).Scan(&userId, &username, &generatedAt, &expiresAt)
 // if err != nil {
 // 	if err == sql.ErrNoRows {
 // 		return nil, errors.New("Invalid access token.\r\n")

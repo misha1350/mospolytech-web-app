@@ -122,7 +122,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
 
 const getAuthToken = `-- name: GetAuthToken :one
 SELECT TokenID, UserID, AuthToken FROM authentication_tokens
-WHERE AuthToken = ? LIMIT 1
+WHERE UserID = ? ORDER BY GeneratedAt DESC LIMIT 1
 `
 
 type GetAuthTokenRow struct {
@@ -131,8 +131,8 @@ type GetAuthTokenRow struct {
 	Authtoken string
 }
 
-func (q *Queries) GetAuthToken(ctx context.Context, authtoken string) (GetAuthTokenRow, error) {
-	row := q.db.QueryRowContext(ctx, getAuthToken, authtoken)
+func (q *Queries) GetAuthToken(ctx context.Context, userid int32) (GetAuthTokenRow, error) {
+	row := q.db.QueryRowContext(ctx, getAuthToken, userid)
 	var i GetAuthTokenRow
 	err := row.Scan(&i.Tokenid, &i.Userid, &i.Authtoken)
 	return i, err
@@ -243,6 +243,38 @@ type GetUserDataRow struct {
 func (q *Queries) GetUserData(ctx context.Context, email string) (GetUserDataRow, error) {
 	row := q.db.QueryRowContext(ctx, getUserData, email)
 	var i GetUserDataRow
+	err := row.Scan(
+		&i.ID,
+		&i.Roleid,
+		&i.Email,
+		&i.Password,
+		&i.Officeid,
+		&i.Firstname,
+		&i.Lastname,
+		&i.Active,
+	)
+	return i, err
+}
+
+const getUserDataByID = `-- name: GetUserDataByID :one
+SELECT ID, RoleID, Email, Password, OfficeID, FirstName, LastName, Active FROM users
+WHERE ID = ? LIMIT 1
+`
+
+type GetUserDataByIDRow struct {
+	ID        int32
+	Roleid    int32
+	Email     string
+	Password  string
+	Officeid  int32
+	Firstname string
+	Lastname  string
+	Active    sql.NullBool
+}
+
+func (q *Queries) GetUserDataByID(ctx context.Context, id int32) (GetUserDataByIDRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserDataByID, id)
+	var i GetUserDataByIDRow
 	err := row.Scan(
 		&i.ID,
 		&i.Roleid,

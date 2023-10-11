@@ -54,7 +54,7 @@ func authenticationsHandler(c *gin.Context) {
 			return
 		} else {
 			c.SetSameSite(http.SameSiteLaxMode)
-			c.SetCookie("Authorization", tokenDetails["token"].(string), 60*60*24*30, "/", "localhost", false, true)
+			c.SetCookie("Authorization", tokenDetails["token"].(string), 60*60*24*30, "/", "localhost", false, false)
 			enc := json.NewEncoder(c.Writer)
 			enc.SetIndent("", "  ")
 			enc.Encode(tokenDetails)
@@ -68,27 +68,29 @@ func authenticationsHandler(c *gin.Context) {
 
 func validationsHandler(c *gin.Context, token string) {
 	userDetails, err := middleware.ValidateToken(c, token)
+	// What userDetails looks like
+	// userDetailsMap := map[string]interface{}{
+	// 	"email":     userDetails.Email,
+	// 	"firstname": userDetails.Firstname,
+	// 	"lastname":  userDetails.Lastname,
+	// 	"office":    userDetails.Officeid,
+	// 	"password":  userDetails.Password,
+	// }
+	//TODO: Send user data back to frontend
 	if err != nil {
-		c.Writer.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprint(c.Writer, err.Error())
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 	} else {
-		enc := json.NewEncoder(c.Writer)
-		enc.SetIndent("", "  ")
-		enc.Encode(userDetails)
+		c.JSON(http.StatusOK, gin.H{"userDetails": userDetails})
 	}
+	// if err != nil {
+	// 	c.Writer.WriteHeader(http.StatusUnauthorized)
+	// 	fmt.Fprint(c.Writer, err.Error())
+	// } else {
+	// 	enc := json.NewEncoder(c.Writer)
+	// 	enc.SetIndent("", "  ")
+	// 	enc.Encode(userDetails)
+	// }
 }
-
-// func testResourceHandler(c *gin.Context) {
-// 	authToken := strings.Split(c.Request.Header.Get("Authorization"), "Bearer ")[1]
-// 	userDetails, err := middleware.ValidateToken(authToken)
-// 	if err != nil {
-// 		fmt.Fprintf(c.Writer, err.Error())
-// 	} else {
-// 		// E-mail or First and Last Name?
-// 		username := fmt.Sprint(userDetails["email"])
-// 		fmt.Fprintf(c.Writer, "Welcome, "+username+"\r\n")
-// 	}
-// }
 
 func main() {
 
@@ -101,7 +103,6 @@ func main() {
 	)
 
 	router.StaticFile("/api/server/css/styles2.css", "./templates/css/styles2.css")
-	// router.Static("/vue", ".vue-project/src/App.vue")
 
 	// Process the templates at the start so that they don't have to be loaded
 	// from the disk again. This makes serving HTML pages very fast.
