@@ -1,7 +1,6 @@
 version: "3"
 services:
   reverse-proxy:
-    # The official v2 Traefik docker image
     image: traefik:v2.10
     # Enables the web UI and tells Traefik to listen to docker
     command:
@@ -23,6 +22,7 @@ services:
       - MYSQL_ROOT_PASSWORD=123qwe
       - MYSQL_DATABASE=session1_xx
     ports:
+    # Change the MySQL port if this application's MySQL container's port is in conflict. Go to the .env file in the server folder.
       - "3308:3308"
     volumes:
       - "mysql-account:/var/lib/mysql"
@@ -33,6 +33,7 @@ services:
       target: builder
     env_file: ./server/.env
     image: server-mospolytech
+    # TODO: Streamline changing the port numbers across all containers from cmdline or .env file
     expose:
       - "8086"
     labels:
@@ -52,7 +53,7 @@ services:
     build:
       context: ./client 
     image: client-mospolytech # if we don't give image name, traefik won't create router 🤷‍♂️
-    # TODO: Fix the Bad Gateway error
+    # TODO: Fix the Bad Gateway error of the dockerized client (it works fine on bare metal)
     expose:
       - "8087"
     ports:

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -55,10 +54,8 @@ func authenticationsHandler(c *gin.Context) {
 		} else {
 			c.SetSameSite(http.SameSiteNoneMode)
 			c.SetCookie("Authorization", tokenDetails["token"].(string), 60*60*24*30, "/", "127.0.0.1", false, false)
-			enc := json.NewEncoder(c.Writer)
-			enc.SetIndent("", "  ")
-			enc.Encode(tokenDetails)
-			fmt.Print(tokenDetails)
+			// Redirect the user back to the frontend
+			c.Redirect(http.StatusMovedPermanently, "http://localhost:8087/client")
 		}
 	} else {
 		c.Writer.WriteHeader(http.StatusUnauthorized)
