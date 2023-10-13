@@ -53,20 +53,21 @@ function endSession() {
   userDetails.value = null
 }
 
-function logIn() {
+function login() {
   // Redirect to the backend's login page
   window.location.href = '/api/server/login'
 }
 </script>
 
 <!--TODO: Create buttons and CSS in the header for better navigation across the frontend-->
+<!--TODO: Implement functionality to display SELECT query results-->
 <template>
   <h1>Application</h1>
   <h3 v-if="returnCode">Return code: {{ returnCode }}</h3>
   <h3 v-if="errorMessage">{{ errorMessage }}</h3>
   <h3 v-if="userDetails">Welcome, {{ userDetails.firstname }} {{ userDetails.lastname }} from office no. {{ userDetails.office }}</h3>
   
-  <button v-if="!userDetails" @click="logIn">Log In</button>
+  <button v-if="!userDetails" @click="login">Log In</button>
   <button v-if="userDetails" @click="endSession">End Session</button>
   <button id="show-modal" @click="showModal = true">Edit Role</button>
 

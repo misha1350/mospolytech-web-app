@@ -30,7 +30,6 @@ func registrationsHandler(c *gin.Context) {
 		"office":    c.Request.FormValue("office"),
 		"password":  c.Request.FormValue("password"),
 	}
-	log.Println(userDetails["email"], userDetails["firstname"], userDetails["lastname"], userDetails["birthdate"], userDetails["office"], userDetails["password"])
 
 	response, err := middleware.RegisterUser(userDetails)
 	if err != nil {
@@ -44,7 +43,6 @@ func registrationsHandler(c *gin.Context) {
 
 func authenticationsHandler(c *gin.Context) {
 	email, password := c.Request.FormValue("email"), c.Request.FormValue("password")
-	fmt.Println(email, password)
 	if email != "" || password != "" {
 		tokenDetails, err := middleware.GenerateToken(email, password)
 		if err != nil {
@@ -89,6 +87,10 @@ func validationsHandler(c *gin.Context, token string) {
 	// }
 }
 
+func init() {
+	middleware.DbConnect()
+}
+
 func main() {
 
 	//logOutput()
@@ -109,8 +111,15 @@ func main() {
 	// "/api/server" is needed for Traefik to route the request to the server, according to the rule that you set in docker-compose.yml
 	//
 	router.GET("/api/server/ping", func(context *gin.Context) {
+		// Check if the database connection is successful
+		dbErr := middleware.DbPing()
+		dbStatus := "connected"
+		if dbErr != nil {
+			dbStatus = "unreachable"
+		}
 		context.JSON(http.StatusOK, gin.H{
-			"hello": "world",
+			"message": "pong",
+			"db":      dbStatus,
 		})
 	})
 
@@ -152,9 +161,10 @@ func main() {
 		registrationsHandler(context)
 	})
 
-	//TODO: Add middleware to edit user data
-	router.GET("/api/server/user_edit", func(context *gin.Context) {
-	})
+	//TODO: Implement SELECT queries for the frontend
+
+	//TODO: Complete user editing
+	router.POST("/api/server/user_edit", middleware.EditUser)
 
 	router.POST("/api/server/check", func(context *gin.Context) {
 		token := context.GetHeader("Authorization")

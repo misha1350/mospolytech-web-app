@@ -51,9 +51,9 @@ const props = defineProps({
             <div class="field">
               <label class="label">Role:</label>
               <div class="control">
-                <input type="radio" id="user" value="User" v-model="user.role">
+                <input type="radio" id="user" value="1" v-model="user.role" name="role">
                 <label for="user">User</label><br>
-                <input type="radio" id="admin" value="Administrator" v-model="user.role">
+                <input type="radio" id="admin" value="2" v-model="user.role" name="role">
                 <label for="admin">Administrator</label><br>
               </div>
             </div>
@@ -83,7 +83,7 @@ export default {
         firstname: '',
         lastname: '',
         office: '',
-        role: 'User',
+        role: '1',
       },
       processing: false,
       message: '',
