@@ -18,7 +18,7 @@ DELETE FROM countries
 WHERE Id = ?;
 
 -- name: GetUsers :many
-SELECT * FROM users
+SELECT ID, RoleID, Email, FirstName, LastName, OfficeID, Active FROM users
 ORDER BY ID;
 
 -- name: GetUserToUpdate :one

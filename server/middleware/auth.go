@@ -115,10 +115,6 @@ func ValidateToken(c *gin.Context, tokenString string) (map[string]interface{}, 
 			return nil, errors.New("user not found")
 		}
 
-		fmt.Println("dbToken:", dbToken)
-		// fmt.Println("user:", tokenString)
-		fmt.Println("givenToken:", givenToken)
-
 		userDetails, err := queries.GetUserDataByID(c, dbToken.Userid)
 		if err != nil {
 			return nil, errors.New("user not found")
@@ -129,8 +125,10 @@ func ValidateToken(c *gin.Context, tokenString string) (map[string]interface{}, 
 			"firstname": userDetails.Firstname,
 			"lastname":  userDetails.Lastname,
 			"office":    userDetails.Officeid,
-			"password":  userDetails.Password,
+			"role":      userDetails.Roleid,
 		}
+
+		fmt.Printf("role: %v%T\n", userDetails.Roleid, userDetails.Roleid)
 
 		return userDetailsMap, nil
 	} else {

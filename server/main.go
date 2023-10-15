@@ -50,8 +50,8 @@ func authenticationsHandler(c *gin.Context) {
 			fmt.Fprint(c.Writer, err.Error())
 			return
 		} else {
-			c.SetSameSite(http.SameSiteNoneMode)
-			c.SetCookie("Authorization", tokenDetails["token"].(string), 60*60*24*30, "/", "127.0.0.1", false, false)
+			c.SetSameSite(http.SameSiteLaxMode)
+			c.SetCookie("Authorization", tokenDetails["token"].(string), 60*60*24*30, "/", "localhost", false, false)
 			// Redirect the user back to the frontend
 			c.Redirect(http.StatusMovedPermanently, "http://localhost:8087/client")
 		}
@@ -64,27 +64,18 @@ func authenticationsHandler(c *gin.Context) {
 func validationsHandler(c *gin.Context, token string) {
 	userDetails, err := middleware.ValidateToken(c, token)
 	// What userDetails looks like
-	// userDetailsMap := map[string]interface{}{
+	// userDetails := map[string]interface{}{
 	// 	"email":     userDetails.Email,
 	// 	"firstname": userDetails.Firstname,
 	// 	"lastname":  userDetails.Lastname,
 	// 	"office":    userDetails.Officeid,
-	// 	"password":  userDetails.Password,
+	//  "role":		 userDetails.Roleid,
 	// }
-	//TODO: Send user data back to frontend
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 	} else {
 		c.JSON(http.StatusOK, gin.H{"userDetails": userDetails})
 	}
-	// if err != nil {
-	// 	c.Writer.WriteHeader(http.StatusUnauthorized)
-	// 	fmt.Fprint(c.Writer, err.Error())
-	// } else {
-	// 	enc := json.NewEncoder(c.Writer)
-	// 	enc.SetIndent("", "  ")
-	// 	enc.Encode(userDetails)
-	// }
 }
 
 func init() {
@@ -162,6 +153,7 @@ func main() {
 	})
 
 	//TODO: Implement SELECT queries for the frontend
+	router.GET("/api/server/get_users", middleware.GetUsers)
 
 	//TODO: Complete user editing
 	router.POST("/api/server/user_edit", middleware.EditUser)

@@ -10,7 +10,9 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package*.json ./
 
 # install project dependencies
-RUN npm install
+RUN npm install -d tailwindcss@latest postcss@latest autoprefixer@latest
+
+RUN npm install axios vue-router@4
 
 # copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .

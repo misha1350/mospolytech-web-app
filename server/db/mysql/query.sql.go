@@ -311,28 +311,36 @@ func (q *Queries) GetUserToUpdate(ctx context.Context, id int32) (User, error) {
 }
 
 const getUsers = `-- name: GetUsers :many
-SELECT id, roleid, email, password, firstname, lastname, officeid, birthdate, active FROM users
+SELECT ID, RoleID, Email, FirstName, LastName, OfficeID, Active FROM users
 ORDER BY ID
 `
 
-func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
+type GetUsersRow struct {
+	ID        int32
+	Roleid    int32
+	Email     string
+	Firstname string
+	Lastname  string
+	Officeid  int32
+	Active    sql.NullBool
+}
+
+func (q *Queries) GetUsers(ctx context.Context) ([]GetUsersRow, error) {
 	rows, err := q.db.QueryContext(ctx, getUsers)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []User
+	var items []GetUsersRow
 	for rows.Next() {
-		var i User
+		var i GetUsersRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Roleid,
 			&i.Email,
-			&i.Password,
 			&i.Firstname,
 			&i.Lastname,
 			&i.Officeid,
-			&i.Birthdate,
 			&i.Active,
 		); err != nil {
 			return nil, err

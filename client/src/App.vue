@@ -1,15 +1,11 @@
-<!--
-https://eugenkiss.github.io/7guis/tasks/#flight
--->
-
 <script setup>
-import Modal from './Modal.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
-const showModal = ref(false)
-const returnCode = ref(null)
-const errorMessage = ref(null)
-const userDetails = ref(null)
+const store = useStore()
+const router = useRouter()
+
 onMounted(async () => {
   // get cookie value
   const cookie = document.cookie
@@ -17,8 +13,7 @@ onMounted(async () => {
     .find(row => row.startsWith('Authorization='));
 
   if (!cookie) {
-    returnCode.value = 401
-    errorMessage.value = 'There is no Authorization cookie. Try logging in again.'
+    login()
     return
   }
 
@@ -28,8 +23,7 @@ onMounted(async () => {
   localStorage.setItem('Authorization', cookieValue);
   const token = localStorage.getItem('Authorization')
   if (!token) {
-    returnCode.value = 401
-    errorMessage.value = 'There is no JWT token in localStorage. Try logging in again.'
+    login()
     return
   }
 
@@ -39,19 +33,13 @@ onMounted(async () => {
   })
   const body = await response.json()
 
-  returnCode.value = response.status
   if (response.status === 200) {
-    userDetails.value = body.userDetails
+    store.commit('setUserDetails', body.userDetails)
+    router.push('/client/home')
   } else {
-    errorMessage.value = body.error.message
+    login()
   }
 })
-
-function endSession() {
-  localStorage.removeItem('Authorization')
-  // Clear user details
-  userDetails.value = null
-}
 
 function login() {
   // Redirect to the backend's login page
@@ -59,9 +47,15 @@ function login() {
 }
 </script>
 
+<template>
+  <div>
+    <router-view></router-view>
+  </div>
+</template>
+
 <!--TODO: Create buttons and CSS in the header for better navigation across the frontend-->
 <!--TODO: Implement functionality to display SELECT query results-->
-<template>
+<!-- <template>
   <h1>Application</h1>
   <h3 v-if="returnCode">Return code: {{ returnCode }}</h3>
   <h3 v-if="errorMessage">{{ errorMessage }}</h3>
@@ -72,11 +66,10 @@ function login() {
   <button id="show-modal" @click="showModal = true">Edit Role</button>
 
   <Teleport to="body">
-    <!-- use the modal component, pass in the prop -->
     <modal :show="showModal" @close="showModal = false">
       <template #header>
         <h2>Edit Role for User</h2>
       </template>
     </modal>
   </Teleport>
-</template>
+</template> -->
