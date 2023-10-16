@@ -1,7 +1,21 @@
 # Vue 3 + Vite
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Клиентское приложение, созданное с использованием фреймворка Vue 3. Поддерживает вход в аккаунт, аутентификацию по токенам JWT. В текущее время разрабатывается функционал для администратора - сейчас приложение позволяет смотреть зарегистрированных пользователей и изменять информацию о пользователях.
 
-## Recommended IDE Setup
+Для навигации по приложению создан navbar и переход между страницами сделан при помощи Vue Router. Также используется Vuex для сохранения информации о текущем пользователе.
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Как запустить, чтобы проверить приложение уже сейчас
+
+В данный момент запуск приложения через Docker-Compose не является первоочередной задачей (в моём ВУЗе нет такого требования, зато есть требования по срокам), поэтому если сейчас попробовать запустить приложение через `docker-compose up`, то у вас возможно не получится подключиться к frontend-приложению. Целевая платформа на данный момент - localhost.
+
+После клонирования репозитория (можно сделать через команду `git clone https://github.com/misha1350/mospolytech-web-app.git`) перейдите в папку с проектом и выполните следующие команды:
+`cd ./client`
+`npm install`
+`npm run dev`
+
+Не забудьте перед этим установить Node.js и npm, а также Golang, потому что необходимо также запустить бэкенд-сервер:
+
+`cd ./server`
+`go run main.go`
+
+И удостоверьтесь, что ваша база данных MySQL запущена и настроена на порт, который вы должны указать в файле ./server/.env. Через Docker тоже можно подключиться, главное указать правильный адрес, порт, логин и пароль в файле .env.
