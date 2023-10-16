@@ -156,7 +156,7 @@ func main() {
 	router.GET("/api/server/get_users", middleware.GetUsers)
 
 	//TODO: Complete user editing
-	router.POST("/api/server/user_edit", middleware.EditUser)
+	router.PUT("/api/server/user_edit", middleware.EditUser)
 
 	router.POST("/api/server/check", func(context *gin.Context) {
 		token := context.GetHeader("Authorization")
