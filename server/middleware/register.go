@@ -13,7 +13,7 @@ import (
 func RegisterUser(userDetails map[string]interface{}) (string, error) {
 	ctx := context.Background()
 
-	db, err := DbConnect()
+	db, err := GetDB()
 	if err != nil {
 		return "Database connection failed", err
 	}

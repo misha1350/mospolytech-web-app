@@ -1,4 +1,4 @@
-# MosPolytech Web App
+# Universal MosPolytech Web App
 Учебный проект, с бэкендом написанным на Go с использованием фреймворка Gin Gonic, MySQL [SQLC](https://sqlc.dev), [jwt-go](github.com/golang-jwt/jwt), и с фронтендом, который разрабатывается с использованием Vue 3. Reverse Proxy - Traefik. Всё в контейнерах Docker. WIP.
 
 ## Что делает

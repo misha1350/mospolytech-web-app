@@ -23,15 +23,21 @@ func EditUser(c *gin.Context) {
 		return
 	}
 
+	db, err := GetDB()
+	if err != nil {
+		c.JSON(500, gin.H{"error": "Database connection failed"})
+		return
+	}
+	queries := mysql.New(db)
+
 	fmt.Println(editedUser.Email)
 	fmt.Println(editedUser.FirstName)
 	fmt.Println(editedUser.LastName)
 	fmt.Println(editedUser.Office)
 	fmt.Println(editedUser.Role)
 
-	queries := mysql.New(DB)
 	// TODO: Get User ID from the user SELECTed to be edited from the frontend
-	err := queries.UpdateUser(c, mysql.UpdateUserParams{
+	err = queries.UpdateUser(c, mysql.UpdateUserParams{
 		Roleid:    1,
 		Email:     editedUser.Email,
 		Firstname: editedUser.FirstName,

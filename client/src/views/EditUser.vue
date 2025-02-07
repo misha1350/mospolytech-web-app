@@ -99,7 +99,7 @@ const message = ref('')
 // Submit form
 const submitForm = async () => {
   const response = await fetch('/api/server/user_edit', {
-    method: 'POST',
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(user.value),
   })
@@ -114,4 +114,4 @@ const submitForm = async () => {
 
 <style scoped>
 /* Add your styles here */
-</style>  
+</style>
