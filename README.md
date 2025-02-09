@@ -1,150 +1,150 @@
-# User Management System
+# Система управления пользователями
 
-A Vue.js + Go web application with JWT authentication and role-based access control.
+Веб-приложение на Vue.js + Go с JWT-аутентификацией и контролем доступа на основе ролей.
 
-## 📚 Documentation Index
+## 📚 Индекс документации
 
-### Getting Started
-- [Frontend Quick Start Guide](docs/FRONTEND_QUICKSTART.md) - Essential guide for DevOps engineers learning front-end
-- [Contributing Guide](CONTRIBUTING.md) - Setup instructions and development workflow
-- [Architecture Overview](docs/ARCHITECTURE.md) - System design and component interactions
+### Начало работы
+- [Краткое руководство по Frontend](docs/FRONTEND_QUICKSTART.md) - Важное руководство для общего понимания Frontend'а
+- [Руководство по внесению вклада](CONTRIBUTING.md) - Инструкции по настройке и процессу разработки
+- [Обзор архитектуры](docs/ARCHITECTURE.md) - Дизайн системы и взаимодействие компонентов
 
-### API & Security
-- [API Documentation](docs/API.md) - Complete API reference
-- [API Examples](docs/API_EXAMPLES.md) - Real-world request/response examples
-- [Security Overview](docs/SECURITY.md) - Security implementations and considerations
+### API и безопасность
+- [Документация API](docs/API.md) - Полный справочник API
+- [Примеры API](docs/API_EXAMPLES.md) - Примеры запросов и ответов из реального мира
+- [Обзор безопасности](docs/SECURITY.md) - Реализации и соображения безопасности
 
-### Project Status
-- [TODO List](TODO.md) - Current project status and planned improvements
+### Статус проекта
+- [Список TODO](TODO.md) - Текущий статус проекта и запланированные улучшения
 
-## 🚀 Quick Start
+## 🚀 Быстрый старт
 
-### Prerequisites
-- Go 1.x
+### Предварительные требования
+- Go 1.20+
 - Node.js 16+
 - MySQL 8.0+
-- Docker (optional)
+- Docker (опционально)
 
-### Development Setup
+### Настройка разработки
 
-1. Clone the repository:
+1. Клонируйте репозиторий:
 ```bash
 git clone https://github.com/your-username/mospolytech-web-app.git
 cd mospolytech-web-app
 ```
 
-2. Set up environment:
+2. Настройте окружение:
 ```bash
 cp .env.example .env
-# Edit .env with your configurations
+# Отредактируйте .env с вашими конфигурациями
 ```
 
-3. Start the backend:
+3. Запустите бэкенд:
 ```bash
 cd server
 go mod download
 go run main.go
 ```
 
-4. Start the frontend:
+4. Запустите фронтенд:
 ```bash
 cd client
 npm install
 npm run dev
 ```
 
-Visit http://localhost:8087 to see the application.
+Посетите http://localhost:8087, чтобы увидеть приложение.
 
-## 🔑 Key Features
+## 🔑 Ключевые особенности
 
-- JWT-based authentication
-- Role-based access control
-- Dark mode support
-- Responsive design
-- Error boundaries
-- Form validation
-- Loading states
-- Secure session management
+- JWT-аутентификация
+- Контроль доступа на основе ролей
+- Поддержка темной темы
+- Адаптивный дизайн
+- Границы ошибок
+- Валидация форм
+- Состояния загрузки
+- Безопасное управление сессиями
 
-## 🏗️ Technology Stack
+## 🏗️ Технологический стек
 
-### Frontend
+### Фронтенд
 - Vue 3
 - Vuex
 - Vue Router
 - TailwindCSS
 - Vite
 
-### Backend
+### Бэкенд
 - Go
 - Gin
 - JWT
 - MySQL
 - SQLC
 
-## 📊 Architecture Overview
+## 📊 Обзор архитектуры
 
 ```mermaid
 graph TD
-    Client[Vue Frontend] -->|HTTP| Server[Go Backend]
-    Server -->|SQL| DB[(MySQL)]
-    Server -->|JWT| Auth[Authentication]
-    Client -->|State| Vuex[Vuex Store]
+   Client[Vue Frontend] -->|HTTP| Server[Go Backend]
+   Server -->|SQL| DB[(MySQL)]
+   Server -->|JWT| Auth[Аутентификация]
+   Client -->|State| Vuex[Vuex Store]
 ```
 
-## 🔒 Security Features
+## 🔒 Функции безопасности
 
-- HTTP-only cookies for JWT
-- CSRF protection
-- XSS prevention
-- Input validation
-- Error handling
-- Role-based access
-- Secure headers
+- HTTP-only куки для JWT
+- Защита от CSRF
+- Предотвращение XSS
+- Валидация ввода
+- Обработка ошибок
+- Доступ на основе ролей
+- Безопасные заголовки
 
-## 🛠️ Development Tools
+## 🛠️ Инструменты разработки
 
-### Recommended VSCode Extensions
+### Рекомендуемые расширения VSCode
 - Volar (Vue 3)
 - Go
 - SQLTools
 - Docker
 - Markdown Preview
 
-### Browser Extensions
+### Расширения браузера
 - Vue.js devtools
 - React Developer Tools
 - Redux DevTools
 
-## 📝 Development Notes
+## 📝 Заметки о разработке
 
-### Common Tasks
-1. Adding a new page:
-   - Create component in `client/src/views/`
-   - Add route in `client/src/routes.js`
-   - Add navigation link in `NavBar.vue`
+### Общие задачи
+1. Добавление новой страницы:
+   - Создайте компонент в `client/src/views/`
+   - Добавьте маршрут в `client/src/routes.js`
+   - Добавьте ссылку навигации в `NavBar.vue`
 
-2. Adding an API endpoint:
-   - Create handler in `server/middleware/`
-   - Add route in `server/main.go`
-   - Document in `docs/API.md`
+2. Добавление новой конечной точки API:
+   - Создайте обработчик в `server/middleware/`
+   - Добавьте маршрут в `server/main.go`
+   - Задокументируйте в `docs/API.md`
 
-### Best Practices
-- Follow Vue.js style guide
-- Use TypeScript for new components
-- Write documentation for API changes
-- Test in both light and dark modes
-- Validate form inputs
-- Handle loading and error states
+### Лучшие практики
+- Следуйте руководству по стилю Vue.js
+- Используйте TypeScript для новых компонентов
+- Пишите документацию для изменений API
+- Тестируйте в светлой и темной темах
+- Валидируйте вводимые данные в формах
+- Обрабатывайте состояния загрузки и ошибок
 
-## 🤝 Contributing
+## 🤝 Внесение вклада
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed development guidelines.
+Смотрите [CONTRIBUTING.md](CONTRIBUTING.md) для получения подробных инструкций по разработке.
 
 ## 📋 TODO
 
-See [TODO.md](TODO.md) for current project status and planned improvements.
+Смотрите [TODO.md](TODO.md) для получения информации о текущем состоянии проекта и запланированных улучшениях.
 
-## 📜 License
+## 📜 Лицензия
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Этот проект лицензируется в соответствии с лицензией MIT - смотрите файл [LICENSE](LICENSE) для получения подробной информации.
