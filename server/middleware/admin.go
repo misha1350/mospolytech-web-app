@@ -8,9 +8,12 @@ import (
 )
 
 func GetUsers(c *gin.Context) {
-	queries := mysql.New(DB)
-	// TODO: Get 25 users per page number that the frontend requests
-	// Ignore this for now, just get all users
+	db, err := GetDB()
+	if err != nil {
+		c.JSON(500, gin.H{"error": "Database connection failed"})
+		return
+	}
+	queries := mysql.New(db)
 
 	users, err := queries.GetUsers(c)
 	if err != nil {

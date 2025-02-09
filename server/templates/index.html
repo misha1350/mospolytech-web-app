@@ -1,26 +1,24 @@
 {{ template "header.html" }}
-<title>Main Menu</title>
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<title>Amonic Airlines</title>
 
-<div class="container">
-    <h1>123</h1>
-    <h2>hi from index.html</h2>
+<div class="formheader large">
+  <div>
+    <img src="img/logo_with_colors.png" alt="amonic">
+    <h1>Welcome to Amonic Airlines</h1>
+  </div>
 </div>
-<br />
 
+<div class="field">
+  <h2>Quick Links</h2>
+  <div class="control">
+    <a href="/api/server/login" class="button">Login</a>
+    <a href="/api/server/register" class="button">Register</a>
+  </div>
+</div>
 
-
-<link rel="stylesheet" type="text/css" href="/api/server/css/styles.css">
-
-<!-- Link that takes you to /login -->
-<a href="/api/server/login">Login</a><br />
-
-<!-- Link that takes you to /register -->
-<a href="/api/server/register">Register</a><br />
-
-<!-- Link that takes you to /ping -->
-<a href="/api/server/ping">Ping</a><br />
-
-<a href="https://vitejs.dev/" target="_blank" rel="noopener">Vite</a> +
+<div class="field">
+  <h2>About Us</h2>
+  <p>Amonic Airlines is your trusted partner for safe and comfortable air travel. We provide exceptional service and connect you to destinations worldwide.</p>
+</div>
 
 {{ template "footer.html" }}

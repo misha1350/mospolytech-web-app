@@ -11,93 +11,77 @@
   
 <div class="formheader large">
   <div>
-    <div>
-      <img src="img/logo_transparent.png" style="width: 90%; height: auto" alt="amonic">
-    </div>
-    <div>
-      <h1>Create an Amonic account.</h1>
-      <p>
-        <b>
-          Already have an account?
-          <a href="/api/server/login">Log in</a>
-        </b>
-      </p>
-    </div>
+    <img src="img/logo_transparent.png" alt="amonic">
+    <h1>Create an Amonic account</h1>
+    <p>Already have an account? <a href="/api/server/login">Log in</a></p>
   </div>
 </div>
 
-<form id="signupForm" action="/api/server/register" method="POST" class="twocols" content="text/html" accept-charset="UTF-8">
-
-    <div class="container">
-
-      {{if .content}}
-      <div class="notification is-danger is-light">
-        {{.content}}
-      </div>
-
-      {{end}}
-      
-      <div class="field">
-        <label class="label">First Name</label>
-        <div class="control">
-          <input class="input" type="text" placeholder="Enter Username" name="firstname" required>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">Last Name</label>
-        <div class="control">
-          <input class="input" type="text" placeholder="Enter Username" name="lastname" required>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">Email address</label>
-        <div class="control">
-          <input class="input" type="text" placeholder="Enter Username" name="email" required>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">Birthdate</label>
-        <div class="control">
-          <input class="input" type="date" placeholder="[ dd/mm/yy ]" name="birthdate" required>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">Password</label>
-        <div class="control">
-          <input class="input" type="password" placeholder="Enter Password" name="password" required>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">Confirm Password</label>
-        <div class="control">
-          <input class="input" type="password" placeholder="Confirm Password" name="password" required>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label">Office</label>
-        <div class="control">
-          <select name="office">
-            <option value="1">Select your office</option>
-            <option value="2">Office 1</option>
-            <option value="3">Office 2</option>
-            <option value="4">Office 3</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="field">
-        <button class="button is-link">Register User</button>
-      </div>
-
+<form action="/api/server/register" method="POST">
+  {{if .content}}
+  <div class="error-msg">
+    {{.content}}
+  </div>
+  {{end}}
+  
+  <div class="field">
+    <label class="label">First Name</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="Enter first name" name="firstname" required>
     </div>
-  </form>
+  </div>
 
+  <div class="field">
+    <label class="label">Last Name</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="Enter last name" name="lastname" required>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Email address</label>
+    <div class="control">
+      <input class="input" type="email" placeholder="Enter email address" name="email" required>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Birthdate</label>
+    <div class="control">
+      <input class="input" type="date" name="birthdate" required>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Password</label>
+    <div class="control">
+      <input class="input" type="password" placeholder="Enter password" name="password" required>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Confirm Password</label>
+    <div class="control">
+      <input class="input" type="password" placeholder="Confirm password" name="password2" required>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Office</label>
+    <div class="control">
+      <select name="office" class="input">
+        <option value="">Select your office</option>
+        <option value="1">Office 1</option>
+        <option value="2">Office 2</option>
+        <option value="3">Office 3</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="field">
+    <button class="button">Register</button>
+  </div>
+</form>
 
 {{ template "footer.html" }}
 

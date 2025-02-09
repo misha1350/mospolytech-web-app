@@ -7,22 +7,32 @@ const store = useStore()
 const router = useRouter()
 
 onMounted(async () => {
-  // Initialize dark mode state
+  // Initialize store state without DOM manipulation
   store.commit('initializeDarkMode')
 
+  // get cookie value
   const cookie = document.cookie
     .split('; ')
-    .find(row => row.startsWith('Authorization='))
+    .find(row => row.startsWith('Authorization='));
 
   if (!cookie) {
     login()
     return
   }
 
-  const token = cookie.split('=')[1]
+  const cookieValue = cookie.split('=')[1];
+
+  // TODO: Prevent localStorage from being rewritten after logout
+  localStorage.setItem('Authorization', cookieValue);
+  const token = localStorage.getItem('Authorization')
+  if (!token) {
+    login()
+    return
+  }
+
   const response = await fetch('/api/server/check', {
     method: 'POST',
-    headers: { 'Authorization': token }
+    headers: { 'Authorization': `${token}` },
   })
   const body = await response.json()
 
@@ -35,6 +45,7 @@ onMounted(async () => {
 })
 
 function login() {
+  // Redirect to the backend's login page
   window.location.href = '/api/server/login'
 }
 </script>

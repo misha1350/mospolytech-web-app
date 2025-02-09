@@ -1,61 +1,76 @@
 package middleware
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
-	"log"
 	"os"
+	"sync"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
+	"github.com/misha1350/mospolytech-web-app/config"
 )
 
-var DB *sql.DB
+var (
+	db     *sql.DB
+	dbOnce sync.Once
+)
 
-func init() {
+func initDB() error {
+	if err := godotenv.Load(".env"); err != nil {
+		return fmt.Errorf("error loading .env file: %v", err)
+	}
+
+	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_NAME"))
+
 	var err error
-	err = godotenv.Load(".env")
+	db, err = sql.Open("mysql", connStr)
 	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	dbName := os.Getenv("DB_NAME")
-
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, dbName)
-	DB, err = sql.Open("mysql", connectionString)
-	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("error opening database: %v", err)
 	}
 
-	err = DB.Ping()
-	if err != nil {
-		log.Fatal(err)
-	}
-}
+	// Load database configuration
+	dbConfig := config.LoadDatabaseConfig()
 
-func DbConnect() (*sql.DB, error) {
-	return DB, nil
-}
+	// Set connection pool parameters from config
+	db.SetMaxOpenConns(dbConfig.MaxOpenConns)
+	db.SetMaxIdleConns(dbConfig.MaxIdleConns)
+	db.SetConnMaxLifetime(dbConfig.ConnMaxLifetime)
 
-func DbPing() error {
-	err := DB.Ping()
-	if err != nil {
-		return err
+	// Verify connection
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := db.PingContext(ctx); err != nil {
+		return fmt.Errorf("error connecting to database: %v", err)
 	}
+
 	return nil
 }
 
-// func main() {
-// 	db, err := DbConnect()
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+// GetDB returns a database instance, initializing it if necessary
+func GetDB() (*sql.DB, error) {
+	var initErr error
+	dbOnce.Do(func() {
+		initErr = initDB()
+	})
+	if initErr != nil {
+		return nil, initErr
+	}
+	return db, nil
+}
 
-// 	// Use the db connection
-// 	// ...
-
-// 	db.Close()
-// }
+// CloseDB closes the database connection
+func CloseDB() error {
+	if db != nil {
+		return db.Close()
+	}
+	return nil
+}

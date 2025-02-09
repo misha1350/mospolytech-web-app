@@ -14,12 +14,12 @@ import (
 	"github.com/misha1350/mospolytech-web-app/middleware"
 )
 
-// func logOutput() {
-// 	f, _ := os.Create("access.log")
-// 	// persistent logs can grow extremely large with this:
-// 	// f, _ := os.OpenFile("access.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-// 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
-// }
+func init() {
+	// Initialize database connection
+	if _, err := middleware.GetDB(); err != nil {
+		log.Fatalf("Failed to initialize database: %v", err)
+	}
+}
 
 func registrationsHandler(c *gin.Context) {
 	userDetails := map[string]interface{}{
@@ -78,10 +78,6 @@ func validationsHandler(c *gin.Context, token string) {
 	}
 }
 
-func init() {
-	middleware.DbConnect()
-}
-
 func main() {
 
 	//logOutput()
@@ -102,15 +98,27 @@ func main() {
 	// "/api/server" is needed for Traefik to route the request to the server, according to the rule that you set in docker-compose.yml
 	//
 	router.GET("/api/server/ping", func(context *gin.Context) {
-		// Check if the database connection is successful
-		dbErr := middleware.DbPing()
-		dbStatus := "connected"
-		if dbErr != nil {
-			dbStatus = "unreachable"
+		// Check if the database connection is alive
+		db, err := middleware.GetDB()
+		if err != nil {
+			context.JSON(http.StatusServiceUnavailable, gin.H{
+				"message": "error",
+				"db":      "connection failed",
+			})
+			return
 		}
+
+		if err := db.Ping(); err != nil {
+			context.JSON(http.StatusServiceUnavailable, gin.H{
+				"message": "error",
+				"db":      "unreachable",
+			})
+			return
+		}
+
 		context.JSON(http.StatusOK, gin.H{
 			"message": "pong",
-			"db":      dbStatus,
+			"db":      "connected",
 		})
 	})
 
