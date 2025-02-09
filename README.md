@@ -1,38 +1,150 @@
-# Universal MosPolytech Web App
-Учебный проект, с бэкендом написанным на Go с использованием фреймворка Gin Gonic, MySQL [SQLC](https://sqlc.dev), [jwt-go](github.com/golang-jwt/jwt), и с фронтендом, который разрабатывается с использованием Vue 3. Reverse Proxy - Traefik. Всё в контейнерах Docker. WIP.
+# User Management System
 
-## Что делает
-Позволяет регистрироваться и входить в аккаунт пользователя или администратора. Позволяет администратору редактировать данные пользователя, отключать или удалять аккаунт пользователя. Функционала на данный момент мало, потому что добавление функционала уже является довольно простым занятием - основной задачей данного проекта являлось создание фундамента, на котором можно будет развивать весь остальной функционал по шаблонам всех эндпоинтов и прочего.
+A Vue.js + Go web application with JWT authentication and role-based access control.
 
-Для потенциальных работодателей: В данный момент программа имеет основной фундамент из сервировки HTML-страниц с CSS, контента, и CRUD-запросов вместе с типизированными структурами данных для лёгкой и корректной работы с БД и простого улучшения функционала приложения. При регистрации пароль шифруется в БД с помощью bcrypt. Для аутентификации создаются JWT-токены и сохраняются в cookies у клиента и в БД на сервере. Трафик раскидывается с использованием reverse proxy Traefik. Используется Docker-Compose для сборки всех контейнеров.
+## 📚 Documentation Index
 
-## Роль Vue 3 + Vite в данном проекте
-Клиентское приложение создано с использованием фреймворка Vue 3. Оно поддерживает вход в аккаунт, аутентификацию по токенам JWT. В текущее время разрабатывается функционал для администратора - сейчас приложение позволяет смотреть зарегистрированных пользователей и изменять информацию о пользователях.
+### Getting Started
+- [Frontend Quick Start Guide](docs/FRONTEND_QUICKSTART.md) - Essential guide for DevOps engineers learning front-end
+- [Contributing Guide](CONTRIBUTING.md) - Setup instructions and development workflow
+- [Architecture Overview](docs/ARCHITECTURE.md) - System design and component interactions
 
-Для навигации по приложению создан navbar и переход между страницами сделан при помощи Vue Router. Также используется Vuex для сохранения информации о текущем пользователе.
+### API & Security
+- [API Documentation](docs/API.md) - Complete API reference
+- [API Examples](docs/API_EXAMPLES.md) - Real-world request/response examples
+- [Security Overview](docs/SECURITY.md) - Security implementations and considerations
 
-## Как запустить, чтобы проверить приложение уже сейчас
-В данный момент запуск приложения через Docker-Compose не является первоочередной задачей (в моём ВУЗе нет такого требования, зато есть требования по срокам), поэтому если сейчас попробовать запустить приложение через `docker-compose up`, то у вас возможно не получится подключиться к frontend-приложению. Целевая платформа на данный момент - localhost.
+### Project Status
+- [TODO List](TODO.md) - Current project status and planned improvements
 
-После клонирования репозитория (можно сделать через команду `git clone https://github.com/misha1350/mospolytech-web-app.git`) перейдите в папку с проектом и выполните следующие команды:
+## 🚀 Quick Start
 
-`cd ./client`
+### Prerequisites
+- Go 1.x
+- Node.js 16+
+- MySQL 8.0+
+- Docker (optional)
 
-`npm install`
+### Development Setup
 
-`npm run dev`
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/mospolytech-web-app.git
+cd mospolytech-web-app
+```
 
-Не забудьте перед этим установить Node.js и npm, а также Golang, потому что необходимо также запустить бэкенд-сервер:
+2. Set up environment:
+```bash
+cp .env.example .env
+# Edit .env with your configurations
+```
 
-`cd ./server`
+3. Start the backend:
+```bash
+cd server
+go mod download
+go run main.go
+```
 
-`go run main.go`
+4. Start the frontend:
+```bash
+cd client
+npm install
+npm run dev
+```
 
-И удостоверьтесь, что ваша база данных MySQL запущена и настроена на порт, который вы должны указать в файле ./server/.env. Через Docker тоже можно подключиться, главное указать правильный адрес, порт, логин и пароль в файле .env.
+Visit http://localhost:8087 to see the application.
 
-## To-do
-- Добавить больше страниц на Front-end и функционала вместе с ними
-- Починить работу приложения, запущенного через Docker-Compose с Traefik
-- Сделать Makefile'ы
-- Построить пайплайн CI/CD (уже есть один workflow в Actions, но этого недостаточно)
-- Сделать тесты для Middleware
+## 🔑 Key Features
+
+- JWT-based authentication
+- Role-based access control
+- Dark mode support
+- Responsive design
+- Error boundaries
+- Form validation
+- Loading states
+- Secure session management
+
+## 🏗️ Technology Stack
+
+### Frontend
+- Vue 3
+- Vuex
+- Vue Router
+- TailwindCSS
+- Vite
+
+### Backend
+- Go
+- Gin
+- JWT
+- MySQL
+- SQLC
+
+## 📊 Architecture Overview
+
+```mermaid
+graph TD
+    Client[Vue Frontend] -->|HTTP| Server[Go Backend]
+    Server -->|SQL| DB[(MySQL)]
+    Server -->|JWT| Auth[Authentication]
+    Client -->|State| Vuex[Vuex Store]
+```
+
+## 🔒 Security Features
+
+- HTTP-only cookies for JWT
+- CSRF protection
+- XSS prevention
+- Input validation
+- Error handling
+- Role-based access
+- Secure headers
+
+## 🛠️ Development Tools
+
+### Recommended VSCode Extensions
+- Volar (Vue 3)
+- Go
+- SQLTools
+- Docker
+- Markdown Preview
+
+### Browser Extensions
+- Vue.js devtools
+- React Developer Tools
+- Redux DevTools
+
+## 📝 Development Notes
+
+### Common Tasks
+1. Adding a new page:
+   - Create component in `client/src/views/`
+   - Add route in `client/src/routes.js`
+   - Add navigation link in `NavBar.vue`
+
+2. Adding an API endpoint:
+   - Create handler in `server/middleware/`
+   - Add route in `server/main.go`
+   - Document in `docs/API.md`
+
+### Best Practices
+- Follow Vue.js style guide
+- Use TypeScript for new components
+- Write documentation for API changes
+- Test in both light and dark modes
+- Validate form inputs
+- Handle loading and error states
+
+## 🤝 Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed development guidelines.
+
+## 📋 TODO
+
+See [TODO.md](TODO.md) for current project status and planned improvements.
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

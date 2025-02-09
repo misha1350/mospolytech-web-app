@@ -4,7 +4,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     userDetails: null,
-    isDarkMode: true // Default to dark mode
+    isDarkMode: true
   },
   mutations: {
     setUserDetails(state, userDetails) {
@@ -13,19 +13,21 @@ export default createStore({
     toggleDarkMode(state) {
       state.isDarkMode = !state.isDarkMode
       // Update class on html element
-      if (state.isDarkMode) {
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-      }
+      document.documentElement.classList.toggle('dark', state.isDarkMode)
       // Save preference to localStorage
-      localStorage.setItem('darkMode', state.isDarkMode)
+      localStorage.setItem('darkMode', String(state.isDarkMode))
     },
     initializeDarkMode(state) {
       // Check localStorage first, otherwise use default (true)
       const darkMode = localStorage.getItem('darkMode')
-      state.isDarkMode = darkMode !== null ? JSON.parse(darkMode) : true
-      // Don't manipulate DOM here since main.js handles initial state
+      state.isDarkMode = darkMode === null ? true : darkMode === 'true'
+      // Update class to match state
+      document.documentElement.classList.toggle('dark', state.isDarkMode)
     }
+  },
+  getters: {
+    isAuthenticated: state => !!state.userDetails,
+    isAdmin: state => state.userDetails?.role === '2',
+    userFullName: state => state.userDetails ? `${state.userDetails.firstname} ${state.userDetails.lastname}` : ''
   }
 })

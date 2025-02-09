@@ -7,29 +7,22 @@ const store = useStore()
 const router = useRouter()
 
 onMounted(async () => {
-  // get cookie value
+  // Initialize dark mode state
+  store.commit('initializeDarkMode')
+
   const cookie = document.cookie
     .split('; ')
-    .find(row => row.startsWith('Authorization='));
+    .find(row => row.startsWith('Authorization='))
 
   if (!cookie) {
     login()
     return
   }
 
-  const cookieValue = cookie.split('=')[1];
-
-  // TODO: Prevent localStorage from being rewritten after logout
-  localStorage.setItem('Authorization', cookieValue);
-  const token = localStorage.getItem('Authorization')
-  if (!token) {
-    login()
-    return
-  }
-
+  const token = cookie.split('=')[1]
   const response = await fetch('/api/server/check', {
     method: 'POST',
-    headers: { 'Authorization': `${token}` },
+    headers: { 'Authorization': token }
   })
   const body = await response.json()
 
@@ -42,34 +35,12 @@ onMounted(async () => {
 })
 
 function login() {
-  // Redirect to the backend's login page
   window.location.href = '/api/server/login'
 }
 </script>
 
 <template>
-  <div>
+  <div class="min-h-screen bg-white dark:bg-gray-900">
     <router-view></router-view>
   </div>
 </template>
-
-<!--TODO: Create buttons and CSS in the header for better navigation across the frontend-->
-<!--TODO: Implement functionality to display SELECT query results-->
-<!-- <template>
-  <h1>Application</h1>
-  <h3 v-if="returnCode">Return code: {{ returnCode }}</h3>
-  <h3 v-if="errorMessage">{{ errorMessage }}</h3>
-  <h3 v-if="userDetails">Welcome, {{ userDetails.firstname }} {{ userDetails.lastname }} from office no. {{ userDetails.office }}</h3>
-  
-  <button v-if="!userDetails" @click="login">Log In</button>
-  <button v-if="userDetails" @click="endSession">End Session</button>
-  <button id="show-modal" @click="showModal = true">Edit Role</button>
-
-  <Teleport to="body">
-    <modal :show="showModal" @close="showModal = false">
-      <template #header>
-        <h2>Edit Role for User</h2>
-      </template>
-    </modal>
-  </Teleport>
-</template> -->
