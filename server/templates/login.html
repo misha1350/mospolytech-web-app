@@ -1,42 +1,42 @@
 {{ template "header.html" }}
 <title>Amonic Login</title>
-<h3 style="text-align: center; font-size: 45px">Log In</h3>
 
-<form action="/api/server/login" method="post" >
+<div class="formheader large">
+  <div>
+    <img src="img/logo_with_colors.png" alt="amonic">
+    <h1>Log in to your account</h1>
+  </div>
+</div>
 
-    <div class="container" style="border: 1px solid gray; border-radius: 3px; padding: 15px; text-align: center; width: 700px; height: auto; margin: 0 auto">
+<form action="/api/server/login" method="post">
+  {{if .content}}
+  <div class="error-msg">
+    {{.content}}
+  </div>
+  {{end}}
 
-      {{if .content}}
-      <div class="notification is-danger is-light">
-        {{.content}}
-      </div>
-
-      {{end}}
-
-      <img src="img/logo_with_colors.png" style="width: 600px; height: auto" alt="amonic">
-
-      <div style="display: grid; grid-template-columns: 75px 200px; justify-content: center; align-items: center; margin-top: 20px; row-gap: 15px">
-
-        <label class="label" style="text-align: left">Username:</label>
-        <div class="control">
-          <input class="input" style="width: 200px" type="text" placeholder="Enter username" name="email" required>
-        </div>
-
-        <label class="label" style="text-align: left">Password:</label>
-        <div class="control">
-          <input class="input" style="width: 200px; " type="password" placeholder="Enter password" name="password" required>
-        </div>  
-      </div>
-
-      <div class="field" style=" width: 175px; margin: 15px auto 15px auto; display: flex; gap: 15px">
-        <button class="button is-link"
-                style="border: 1px solid black; background: #ffffff; padding: 2px; font-size: 14px; width: inherit; cursor: pointer;">
-          Login
-        </button>
-      </div>
-
+  <div class="field">
+    <label class="label">Email address</label>
+    <div class="control">
+      <input class="input" type="email" placeholder="Enter email" name="email" required>
     </div>
-  </form>
+  </div>
+
+  <div class="field">
+    <label class="label">Password</label>
+    <div class="control">
+      <input class="input" type="password" placeholder="Enter password" name="password" required>
+    </div>
+  </div>
+
+  <div class="field">
+    <button class="button">Login</button>
+  </div>
+
+  <p>
+    Don't have an account? <a href="/api/server/register">Sign up</a>
+  </p>
+</form>
 
 {{ template "footer.html" }}
 
