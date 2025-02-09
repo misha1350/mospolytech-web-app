@@ -1,64 +1,69 @@
 <template>
-    <div id="app">
-      <NavBar />
-      <div class="container mx-auto mt-8 px-4">
-        <h1 class="text-4xl font-bold mb-4">Get users from database</h1>
-        <button @click="debug = !debug" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4">
-                        Toggle Debug
+  <div class="min-h-screen bg-white dark:bg-gray-900">
+    <NavBar />
+    <div class="container mx-auto mt-8 px-4">
+      <h1 class="text-4xl font-bold mb-4 dark:text-white">Get users from database</h1>
+      <div class="flex gap-4 mb-4">
+        <button @click="debug = !debug" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Toggle Debug
         </button>
-        <div v-if="debug">
-                        <p>Status Code: {{ statusCode }}</p>
-                        <p>Status Text: {{ statusText }}</p>
-        </div>
         <button @click="fetchUsers" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Refresh
+          Refresh
         </button>
-        
-        <!-- If loading, show loading message -->
-        <div v-if="loading">Loading...</div>
-        
-        <!-- If error, show error message -->
-        <div v-else-if="error">{{ error }}</div>
-        
-        <!-- If no users found, show message -->
-        <div v-else-if="users.length === 0">No users found.</div>
-        
+      </div>
+
+      <div v-if="debug" class="mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg">
+        <p class="dark:text-white">Status Code: {{ statusCode }}</p>
+        <p class="dark:text-white">Status Text: {{ statusText }}</p>
+      </div>
+      
+      <!-- If loading, show loading message -->
+      <div v-if="loading" class="p-4 bg-white dark:bg-gray-800 rounded-lg dark:text-white">Loading...</div>
+      
+      <!-- If error, show error message -->
+      <div v-else-if="error" class="p-4 bg-white dark:bg-gray-800 rounded-lg text-red-600 dark:text-red-400">{{ error }}</div>
+      
+      <!-- If no users found, show message -->
+      <div v-else-if="users.length === 0" class="p-4 bg-white dark:bg-gray-800 rounded-lg dark:text-white">No users found.</div>
+      
       <!-- Otherwise, show users -->
-      <div v-else class="overflow-x-auto mt-6">
+      <div v-else class="overflow-x-auto mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
         <table class="min-w-full leading-normal">
           <thead>
             <tr>
-              <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 dark:bg-gray-800 dark:border-gray-700 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                 ID
               </th>
-              <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 dark:bg-gray-800 dark:border-gray-700 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                 Role ID
               </th>
-              <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 dark:bg-gray-800 dark:border-gray-700 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                 Email
               </th>
-              <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 dark:bg-gray-800 dark:border-gray-700 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                 First Name
               </th>
-              <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 dark:bg-gray-800 dark:border-gray-700 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                 Last Name
               </th>
-              <th class="px-2 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+              <th class="px-2 py-3 border-b-2 border-gray-200 bg-gray-100 dark:bg-gray-800 dark:border-gray-700 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
                 Edit
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in users" :key="user.id" class="text-gray-700">
-              <td class="px-5 py-2 border-b border-gray-200 bg-white text-sm">{{ user.id }}</td>
-              <td class="px-5 py-2 border-b border-gray-200 bg-white text-sm">{{ user.role }}</td>
-              <td class="px-5 py-2 border-b border-gray-200 bg-white text-sm">{{ user.email }}</td>
-              <td class="px-5 py-2 border-b border-gray-200 bg-white text-sm">{{ user.firstname }}</td>
-              <td class="px-5 py-2 border-b border-gray-200 bg-white text-sm">{{ user.lastname }}</td>
-              <td class="py-2 border-b border-gray-200 bg-white text-sm">
+            <tr v-for="user in users" :key="user.id" class="text-gray-700 dark:text-gray-300">
+              <td class="px-5 py-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">{{ user.id }}</td>
+              <td class="px-5 py-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">{{ user.role }}</td>
+              <td class="px-5 py-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">{{ user.email }}</td>
+              <td class="px-5 py-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">{{ user.firstname }}</td>
+              <td class="px-5 py-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">{{ user.lastname }}</td>
+              <td class="py-2 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm">
                 <router-link :to="`/client/admin/edit_user`"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded"> Edit
-                </router-link></td>
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded">
+                  Edit
+                </router-link>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -147,6 +152,6 @@ onMounted(fetchUsers)
   
 <style scoped>
 </style>
-  
+
 
 

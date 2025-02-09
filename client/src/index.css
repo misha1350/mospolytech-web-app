@@ -2,52 +2,47 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* Base styles */
+:root {
+  @apply bg-white text-gray-900;
+}
+
+:root.dark {
+  @apply bg-gray-900 text-white;
+}
+
+body {
+  @apply min-h-screen;
+}
+
+/* Modal styles */
 .modal-mask {
-  position: fixed;
-  z-index: 9998;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  transition: opacity 0.3s ease;
+  @apply fixed z-50 inset-0 bg-black bg-opacity-50 flex transition-opacity;
 }
 
 .modal-container {
-  width: 300px;
-  margin: auto;
-  padding: 20px 30px;
-  background-color: #fff;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
-  transition: all 0.3s ease;
+  @apply w-[300px] mx-auto my-auto p-5 bg-white dark:bg-gray-800 rounded-lg shadow-lg transition-all;
 }
 
 .modal-header h2 {
-  margin-top: 0;
-  color: #42b983;
+  @apply mt-0 text-blue-600 dark:text-blue-400;
 }
 
 .modal-body {
-  margin: 20px 0;
+  @apply my-5;
 }
 
 .modal-default-button {
-  float: right;
+  @apply float-right;
 }
 
-.modal-enter-from {
-  opacity: 0;
-}
-
+.modal-enter-from,
 .modal-leave-to {
   opacity: 0;
 }
 
 .modal-enter-from .modal-container,
 .modal-leave-to .modal-container {
-  -webkit-transform: scale(1.1);
   transform: scale(1.1);
 }
 

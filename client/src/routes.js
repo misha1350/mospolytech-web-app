@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Homepage from './views/Homepage.vue'
 import GetUsers from './views/GetUsers.vue'
 import EditUser from './views/EditUser.vue'
+import Settings from './views/Settings.vue'
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     path: '/client/admin/edit_user',
     name: 'Edit Users',
     component: EditUser },
+  {
+    path: '/client/settings',
+    name: 'Settings',
+    component: Settings
+  }
 ]
 
 const router = createRouter({
