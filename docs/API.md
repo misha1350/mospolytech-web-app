@@ -1,34 +1,34 @@
-# API Documentation
+# Документация API
 
-## Base URL
-All endpoints are prefixed with `/api/server/`
+## Базовый URL
+Все endpoints имеют префикс `/api/server/`
 
-## Authentication
+## Аутентификация
 
-### Overview
-The application uses JWT (JSON Web Token) based authentication. Tokens are stored in HTTP-only cookies and validated on each request. The authentication flow is as follows:
+### Обзор
+В приложении используется аутентификация на основе JWT (JSON Web Token). Токены хранятся в HTTP-only cookies и проверяются при каждом запросе. Схема аутентификации выглядит следующим образом:
 
-1. User logs in via the login form
-2. Server validates credentials and issues a JWT token
-3. Token is stored in an HTTP-only cookie
-4. Frontend includes this cookie automatically in subsequent requests
-5. Server validates the token on each protected endpoint
+1. Пользователь входит в систему через форму входа
+2. Сервер проверяет учетные данные и выдает JWT токен
+3. Токен сохраняется в HTTP-only cookie
+4. Frontend автоматически включает этот cookie в последующие запросы
+5. Сервер проверяет токен для каждого защищенного endpoint
 
 ### Endpoints
 
 #### Login
 - **URL**: `/api/server/login`
-- **Method**: `POST`
-- **Form Data**:
+- **Метод**: `POST`
+- **Данные формы**:
   ```
   email: string
   password: string
   ```
-- **Response**:
-  - Success: Redirects to `/client` with `Authorization` cookie set
-  - Error: Returns error message with appropriate HTTP status
-- **Code Location**: `server/main.go:authenticationsHandler`
-- **Implementation Details**:
+- **Ответ**:
+  - Успех: Перенаправляет на `/client` с установленным cookie `Authorization`
+  - Ошибка: Возвращает сообщение об ошибке с соответствующим HTTP статусом
+- **Расположение кода**: `server/main.go:authenticationsHandler`
+- **Детали реализации**:
   ```go
   // server/middleware/auth.go:GenerateToken
   token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -39,12 +39,12 @@ The application uses JWT (JSON Web Token) based authentication. Tokens are store
 
 #### Token Validation
 - **URL**: `/api/server/check`
-- **Method**: `POST`
-- **Headers**:
+- **Метод**: `POST`
+- **Заголовки**:
   ```
   Authorization: <token>
   ```
-- **Response**:
+- **Ответ**:
   ```json
   {
     "userDetails": {
@@ -56,35 +56,35 @@ The application uses JWT (JSON Web Token) based authentication. Tokens are store
     }
   }
   ```
-- **Code Location**: `server/middleware/auth.go:ValidateToken`
-- **Frontend Usage**: `client/src/App.vue:onMounted`
+- **Расположение кода**: `server/middleware/auth.go:ValidateToken`
+- **Использование во Frontend**: `client/src/App.vue:onMounted`
 
 #### Logout
-Implemented client-side by:
-1. Clearing the Authorization cookie
-2. Clearing the Vuex store state
-3. Redirecting to login page
+Реализован на стороне клиента путем:
+1. Очистки cookie Authorization
+2. Очистки состояния хранилища Vuex
+3. Перенаправления на страницу входа
 
-Code Location: `client/src/views/NavBar.vue:logout`
+Расположение кода: `client/src/views/NavBar.vue:logout`
 
-### Security Considerations
-1. Tokens are stored in HTTP-only cookies to prevent XSS attacks
-2. Token validation includes expiration check
-3. Protected routes require valid token
-4. Role-based access control implemented for admin routes
+### Вопросы безопасности
+1. Токены хранятся в HTTP-only cookies для предотвращения XSS атак
+2. Проверка токена включает проверку срока действия
+3. Защищенные маршруты требуют валидный токен
+4. Реализован контроль доступа на основе ролей для admin маршрутов
 
-## Other Endpoints
+## Другие Endpoints
 
-### User Management
+### Управление пользователями
 
 #### Get Users List
 - **URL**: `/api/server/get_users`
-- **Method**: `GET`
-- **Headers**: 
+- **Метод**: `GET`
+- **Заголовки**: 
   ```
   Authorization: <token>
   ```
-- **Response**:
+- **Ответ**:
   ```json
   {
     "users": [
@@ -100,17 +100,17 @@ Code Location: `client/src/views/NavBar.vue:logout`
     ]
   }
   ```
-- **Code Location**: `server/middleware/admin.go:GetUsers`
+- **Расположение кода**: `server/middleware/admin.go:GetUsers`
 
 #### Edit User
 - **URL**: `/api/server/user_edit`
-- **Method**: `PUT`
-- **Headers**:
+- **Метод**: `PUT`
+- **Заголовки**:
   ```
   Authorization: <token>
   Content-Type: application/json
   ```
-- **Body**:
+- **Тело запроса**:
   ```json
   {
     "email": string,
@@ -120,12 +120,12 @@ Code Location: `client/src/views/NavBar.vue:logout`
     "role": string
   }
   ```
-- **Code Location**: `server/middleware/userEdit.go:EditUser`
+- **Расположение кода**: `server/middleware/userEdit.go:EditUser`
 
 #### User Registration
 - **URL**: `/api/server/register`
-- **Method**: `POST`
-- **Form Data**:
+- **Метод**: `POST`
+- **Данные формы**:
   ```
   email: string
   firstname: string
@@ -134,23 +134,23 @@ Code Location: `client/src/views/NavBar.vue:logout`
   office: string
   password: string
   ```
-- **Code Location**: `server/middleware/register.go:RegisterUser`
+- **Расположение кода**: `server/middleware/register.go:RegisterUser`
 
 ## Frontend-Backend Communication
 
-The frontend (`client/`) communicates with the backend (`server/`) through these main components:
+Frontend (`client/`) взаимодействует с backend (`server/`) через следующие основные компоненты:
 
-1. **Authentication State Management**:
-   - Location: `client/src/store/index.js`
-   - Manages user session and dark mode preferences
-   - Provides getters for user role and authentication status
+1. **Управление состоянием аутентификации**:
+   - Расположение: `client/src/store/index.js`
+   - Управляет пользовательской сессией и настройками темной темы
+   - Предоставляет getters для роли пользователя и статуса аутентификации
 
 2. **Route Guards**:
-   - Location: `client/src/routes.js`
-   - Protects admin routes based on user role
-   - Redirects to login if token is invalid
+   - Расположение: `client/src/routes.js`
+   - Защищает admin маршруты на основе роли пользователя
+   - Перенаправляет на страницу входа, если токен недействителен
 
 3. **API Calls**:
-   - All API calls include the Authorization token from cookies
-   - Error handling with the ErrorBoundary component
-   - Consistent error messages and loading states
+   - Все API calls включают токен Authorization из cookies
+   - Обработка ошибок с помощью компонента ErrorBoundary
+   - Единообразные сообщения об ошибках и состояния загрузки

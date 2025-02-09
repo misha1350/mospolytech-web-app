@@ -1,10 +1,10 @@
-# API Examples
+# Примеры API
 
-This document provides examples of actual API requests and responses for development and testing purposes.
+Этот документ содержит примеры реальных запросов и ответов API для разработки и тестирования.
 
-## Authentication Flow
+## Схема аутентификации
 
-### 1. Login Request
+### 1. Запрос на вход
 ```http
 POST /api/server/login
 Content-Type: application/x-www-form-urlencoded
@@ -12,20 +12,20 @@ Content-Type: application/x-www-form-urlencoded
 email=admin@example.com&password=yourpassword
 ```
 
-### Response
+### Ответ
 ```http
 HTTP/1.1 301 Moved Permanently
 Location: http://localhost:8087/client
 Set-Cookie: Authorization=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...; Path=/; Domain=localhost; SameSite=Lax; HttpOnly
 ```
 
-### 2. Token Validation
+### 2. Проверка токена
 ```http
 POST /api/server/check
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
-### Success Response
+### Успешный ответ
 ```json
 {
   "userDetails": {
@@ -38,22 +38,22 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 }
 ```
 
-### Error Response
+### Ответ с ошибкой
 ```json
 {
   "error": "invalid token"
 }
 ```
 
-## User Management Examples
+## Примеры управления пользователями
 
-### Get Users List
+### Получить список пользователей
 ```http
 GET /api/server/get_users
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
-### Success Response
+### Успешный ответ
 ```json
 {
   "users": [
@@ -79,7 +79,7 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 }
 ```
 
-### Edit User
+### Редактировать пользователя
 ```http
 PUT /api/server/user_edit
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -95,51 +95,51 @@ Content-Type: application/json
 }
 ```
 
-### Success Response
+### Успешный ответ
 ```json
 {
   "message": "User updated successfully"
 }
 ```
 
-### Error Response
+### Ответ с ошибкой
 ```json
 {
   "error": "Failed to update user"
 }
 ```
 
-## Common HTTP Status Codes
+## Общие коды состояния HTTP
 
-- 200 OK: Successful request
-- 201 Created: Resource successfully created
-- 301 Moved Permanently: Redirect (used after login)
-- 400 Bad Request: Invalid input data
-- 401 Unauthorized: Missing or invalid token
-- 403 Forbidden: Insufficient permissions (e.g., non-admin accessing admin routes)
-- 404 Not Found: Resource not found
-- 500 Internal Server Error: Server-side error
+- 200 OK: Успешный запрос
+- 201 Created: Ресурс успешно создан
+- 301 Moved Permanently: Перенаправление (используется после входа)
+- 400 Bad Request: Неверные входные данные
+- 401 Unauthorized: Отсутствует или недействительный токен
+- 403 Forbidden: Недостаточно прав (например, не-админ пытается получить доступ к маршрутам администратора)
+- 404 Not Found: Ресурс не найден
+- 500 Internal Server Error: Ошибка на стороне сервера
 
-## Error Response Format
-All error responses follow this format:
+## Формат ответа об ошибке
+Все ответы об ошибках имеют следующий формат:
 ```json
 {
-  "error": "Human readable error message"
+  "error": "Читаемое сообщение об ошибке"
 }
 ```
 
-## Testing Tokens
+## Тестовые токены
 
-For development purposes, you can use these example JWTs:
+Для целей разработки вы можете использовать эти примеры JWT:
 
-### Admin User
+### Пользователь-администратор
 ```
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImV4cCI6MTcwMDAwMDAwMH0.signature
 ```
 
-### Regular User
+### Обычный пользователь
 ```
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImV4cCI6MTcwMDAwMDAwMH0.signature
 ```
 
-Note: These are example tokens and won't work in production. Generate real tokens through the login endpoint.
+Примечание: это примеры токенов, и они не будут работать в production. Создавайте реальные токены через endpoint входа.

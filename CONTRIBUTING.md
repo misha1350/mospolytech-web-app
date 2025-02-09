@@ -1,17 +1,17 @@
-# Contributing Guide
+# Руководство по участию в разработке
 
-## Development Setup
+## Настройка среды разработки
 
-### Prerequisites
+### Необходимые условия
 - Go 1.x
 - Node.js 16+
 - MySQL 8.0+
-- Docker and Docker Compose (optional, for containerized development)
+- Docker и Docker Compose (опционально, для разработки в контейнерах)
 
-### Environment Setup
+### Настройка окружения
 
-1. Clone the repository
-2. Copy `.env.example` to `.env` and update the values:
+1. Клонируйте репозиторий
+2. Скопируйте `.env.example` в `.env` и обновите значения:
    ```env
    DB_USER=your_db_user
    DB_PASSWORD=your_db_password
@@ -21,121 +21,121 @@
    JWT_SECRET=your_jwt_secret
    ```
 
-### Backend Setup
+### Настройка Backend
 
-1. Install Go dependencies:
+1. Установите Go зависимости:
    ```bash
    cd server
    go mod download
    ```
 
-2. Set up the database:
-   - Import schema from `server/db/schema.sql`
-   - Import initial data from `server/db/data_dump.sql`
+2. Настройте базу данных:
+   - Импортируйте схему из `server/db/schema.sql`
+   - Импортируйте начальные данные из `server/db/data_dump.sql`
 
-3. Start the server:
+3. Запустите сервер:
    ```bash
    go run main.go
    ```
 
-Server will be available at http://localhost:8086
+Сервер будет доступен по адресу http://localhost:8086
 
-### Frontend Setup
+### Настройка Frontend
 
-1. Install Node dependencies:
+1. Установите Node зависимости:
    ```bash
    cd client
    npm install
    ```
 
-2. Start the development server:
+2. Запустите сервер разработки:
    ```bash
    npm run dev
    ```
 
-Frontend will be available at http://localhost:8087
+Frontend будет доступен по адресу http://localhost:8087
 
-## Project Structure
+## Структура проекта
 
 ### Backend (`/server`)
-- `/config` - Configuration loading and management
-- `/db` - Database schemas and migrations
-- `/middleware` - Request handling middleware
-  - `auth.go` - Authentication and authorization
-  - `admin.go` - Admin-only endpoints
-  - `register.go` - User registration
-  - `userEdit.go` - User management
+- `/config` - Загрузка и управление конфигурацией
+- `/db` - Схемы базы данных и миграции
+- `/middleware` - Промежуточное ПО для обработки запросов
+  - `auth.go` - Аутентификация и авторизация
+  - `admin.go` - Эндпоинты только для администраторов
+  - `register.go` - Регистрация пользователей
+  - `userEdit.go` - Управление пользователями
 
 ### Frontend (`/client`)
 - `/src`
-  - `/components` - Reusable Vue components
-  - `/views` - Page components
-  - `/store` - Vuex state management
-  - `/constants` - Shared constants and types
-  - `routes.js` - Route definitions and guards
+  - `/components` - Переиспользуемые Vue компоненты
+  - `/views` - Компоненты страниц
+  - `/store` - Управление состоянием Vuex
+  - `/constants` - Общие константы и типы
+  - `routes.js` - Определения маршрутов и guards
 
-## Development Guidelines
+## Руководство по разработке
 
-### Authentication
-- All protected endpoints must validate the JWT token
-- Use the ErrorBoundary component for error handling
-- Token management happens in the Vuex store
-- Always use HTTP-only cookies for tokens
+### Аутентификация
+- Все защищенные эндпоинты должны проверять JWT токен
+- Используйте компонент ErrorBoundary для обработки ошибок
+- Управление токенами происходит в хранилище Vuex
+- Всегда используйте HTTP-only cookies для токенов
 
-### Error Handling
+### Обработка ошибок
 1. Backend:
-   - Use proper HTTP status codes
-   - Return consistent error response format
-   - Log errors with appropriate detail
+   - Используйте правильные коды состояния HTTP
+   - Возвращайте согласованный формат ответа об ошибке
+   - Логируйте ошибки с соответствующей детализацией
 
 2. Frontend:
-   - Use the ErrorBoundary component
-   - Handle network errors gracefully
-   - Show user-friendly error messages
+   - Используйте компонент ErrorBoundary
+   - Обрабатывайте сетевые ошибки корректно
+   - Отображайте понятные пользователю сообщения об ошибках
 
-### State Management
+### Управление состоянием
 1. Vuex Store:
-   - User authentication state
-   - Dark mode preference
-   - Global loading states
+   - Состояние аутентификации пользователя
+   - Предпочтение темного режима
+   - Глобальные состояния загрузки
 
-2. Component State:
-   - Form data
-   - Loading states
-   - Local UI state
+2. Состояние компонента:
+   - Данные формы
+   - Состояния загрузки
+   - Локальное состояние UI
 
-### Styling
-- Use TailwindCSS utility classes
-- Follow dark mode pattern: `class="text-gray-900 dark:text-white"`
-- Use predefined button classes: `btn btn-primary`
-- Use form classes: `form-input`, `form-select`
+### Стилизация
+- Используйте утилитарные классы TailwindCSS
+- Следуйте шаблону темного режима: `class="text-gray-900 dark:text-white"`
+- Используйте предопределенные классы кнопок: `btn btn-primary`
+- Используйте классы форм: `form-input`, `form-select`
 
-### Testing
-Before submitting a PR:
-1. Ensure all endpoints are properly authenticated
-2. Test form validation
-3. Verify dark mode functionality
-4. Check mobile responsiveness
-5. Validate error handling
+### Тестирование
+Перед отправкой PR:
+1. Убедитесь, что все эндпоинты правильно аутентифицированы
+2. Проверьте валидацию формы
+3. Проверьте функциональность темного режима
+4. Проверьте адаптивность для мобильных устройств
+5. Проверьте обработку ошибок
 
-## Common Tasks
+## Распространенные задачи
 
-### Adding a New Protected Route
-1. Add route in `client/src/routes.js`
-2. Add meta requirements (e.g., `requiresAdmin`)
-3. Create view component
-4. Update navigation if needed
+### Добавление нового защищенного маршрута
+1. Добавьте маршрут в `client/src/routes.js`
+2. Добавьте мета-требования (например, `requiresAdmin`)
+3. Создайте компонент представления
+4. Обновите навигацию, если необходимо
 
-### Adding a New API Endpoint
-1. Create handler in appropriate middleware file
-2. Add route in `server/main.go`
-3. Document in `docs/API.md`
-4. Add error handling
-5. Add authentication check
+### Добавление нового API Endpoint
+1. Создайте обработчик в соответствующем файле middleware
+2. Добавьте маршрут в `server/main.go`
+3. Задокументируйте в `docs/API.md`
+4. Добавьте обработку ошибок
+5. Добавьте проверку аутентификации
 
-### Modifying User Data
-1. Update database schema if needed
-2. Modify relevant handlers
-3. Update frontend forms
-4. Add validation
-5. Update documentation
+### Изменение пользовательских данных
+1. Обновите схему базы данных, если необходимо
+2. Измените соответствующие обработчики
+3. Обновите формы frontend
+4. Добавьте валидацию
+5. Обновите документацию

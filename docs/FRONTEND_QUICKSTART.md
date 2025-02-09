@@ -1,199 +1,199 @@
-# Front-End Development Quick Start Guide
+# Краткое руководство по Front-End разработке
 
-## For DevOps Engineers Learning Front-End
+## Для DevOps инженеров, изучающих Front-End
 
-### Conceptual Overview
+### Концептуальный обзор
 
-#### Key Vue.js Concepts
-1. **Components** - Like microservices for the UI
-   - Each `.vue` file is a self-contained component
-   - Similar to how you structure Docker services
+#### Ключевые концепции Vue.js
+1. **Компоненты** - Как микросервисы для UI
+   - Каждый `.vue` файл - это самодостаточный компонент
+   - Аналогично тому, как вы структурируете Docker сервисы
    ```vue
    <template> <!-- UI/HTML -->
-   <script>    <!-- Logic/JS -->
-   <style>     <!-- Styling/CSS -->
+   <script>    <!-- Логика/JS -->
+   <style>     <!-- Стили/CSS -->
    ```
 
-2. **State Management** - Like environment variables and configurations
-   - Vuex store = Global state (like environment variables)
-   - Component state = Local state (like container-specific configs)
-   - Props = Passed configurations (like Docker command arguments)
+2. **Управление состоянием** - Как переменные окружения и конфигурации
+   - Vuex store = Глобальное состояние (как переменные окружения)
+   - Состояние компонента = Локальное состояние (как специфичные для контейнера конфиги)
+   - Props = Передаваемые конфигурации (как аргументы команд Docker)
 
-3. **Routing** - Like API routing/reverse proxy
-   - Vue Router = Frontend routing (like Traefik/Nginx)
-   - Route guards = Middleware (like auth middleware)
+3. **Маршрутизация** - Как API routing/reverse proxy
+   - Vue Router = Frontend маршрутизация (как Traefik/Nginx)
+   - Route guards = Middleware (как auth middleware)
    - Navigation = Service discovery
 
-### Development Workflow
+### Процесс разработки
 
-1. **Local Development**
+1. **Локальная разработка**
    ```bash
-   # Start backend (Terminal 1)
+   # Запуск бэкенда (Терминал 1)
    cd server
    go run main.go
 
-   # Start frontend (Terminal 2)
+   # Запуск фронтенда (Терминал 2)
    cd client
    npm run dev
    ```
 
 2. **Hot Reload**
-   - Frontend changes are automatically reflected (like nodemon)
-   - No need to rebuild or restart (unlike Go)
+   - Изменения во фронтенде автоматически отображаются (как nodemon)
+   - Нет необходимости пересобирать или перезапускать (в отличие от Go)
 
-3. **Debugging**
-   - Vue DevTools in browser (like container logs)
-   - Network tab for API calls (like monitoring HTTP traffic)
-   - Console for JavaScript logs (like application logs)
+3. **Отладка**
+   - Vue DevTools в браузере (как логи контейнера)
+   - Network tab для API вызовов (как мониторинг HTTP трафика)
+   - Console для JavaScript логов (как логи приложения)
 
-### Common Front-End Patterns (From DevOps Perspective)
+### Распространенные Front-End паттерны (с точки зрения DevOps)
 
-1. **Component Communication**
+1. **Коммуникация между компонентами**
    ```
-   Parent Component
-   └─ Child Component
-      └─ Events (like container signals)
-      └─ Props (like environment variables)
-   ```
-
-2. **State Management**
-   ```
-   Vuex Store (Global)
-   └─ State (like config files)
-   └─ Mutations (like atomic operations)
-   └─ Actions (like async operations)
-   └─ Getters (like computed values)
+   Родительский компонент
+   └─ Дочерний компонент
+      └─ Events (как сигналы контейнера)
+      └─ Props (как переменные окружения)
    ```
 
-3. **Authentication Flow**
+2. **Управление состоянием**
    ```
-   Login Form
+   Vuex Store (Глобальный)
+   └─ State (как файлы конфигурации)
+   └─ Mutations (как атомарные операции)
+   └─ Actions (как асинхронные операции)
+   └─ Getters (как вычисляемые значения)
+   ```
+
+3. **Поток аутентификации**
+   ```
+   Форма логина
    └─ API Request
    └─ JWT Token
    └─ HTTP-Only Cookie
    └─ Protected Routes
    ```
 
-### Development Tips
+### Советы по разработке
 
-1. **Component Structure**
-   - Think of components as microservices
-   - Each should have a single responsibility
-   - Use props for configuration
-   - Emit events for communication
+1. **Структура компонентов**
+   - Думайте о компонентах как о микросервисах
+   - Каждый должен иметь одну ответственность
+   - Используйте props для конфигурации
+   - Emit events для коммуникации
 
-2. **State Management**
+2. **Управление состоянием**
    ```js
-   // Like environment variables
+   // Как переменные окружения
    const state = {
-     userDetails: null,    // User configuration
-     isDarkMode: true,     // UI configuration
-     isLoading: false      // Runtime state
+     userDetails: null,    // Конфигурация пользователя
+     isDarkMode: true,     // Конфигурация UI
+     isLoading: false      // Состояние выполнения
    }
    ```
 
-3. **API Integration**
+3. **Интеграция API**
    ```js
-   // Like service-to-service communication
+   // Как коммуникация между сервисами
    const fetchData = async () => {
      try {
        const response = await fetch('/api/endpoint')
-       // Handle response
+       // Обработка ответа
      } catch (error) {
-       // Handle error
+       // Обработка ошибки
      }
    }
    ```
 
-### Quick Debugging Guide
+### Краткое руководство по отладке
 
 1. **Vue DevTools**
-   - Components tab = Container list
-   - Vuex tab = Global configuration
-   - Events tab = Service communication
-   - Performance tab = Resource usage
+   - Components tab = Список контейнеров
+   - Vuex tab = Глобальная конфигурация
+   - Events tab = Коммуникация между сервисами
+   - Performance tab = Использование ресурсов
 
-2. **Common Issues**
-   - Component not rendering = Check parent-child relationship
-   - State not updating = Check mutations/actions
-   - API calls failing = Check network tab
-   - CSS not applying = Check scope and specificity
+2. **Распространенные проблемы**
+   - Компонент не отображается = Проверьте взаимосвязь родитель-потомок
+   - Состояние не обновляется = Проверьте mutations/actions
+   - API вызовы не работают = Проверьте network tab
+   - CSS не применяется = Проверьте scope и specificity
 
-### Best Practices from DevOps Perspective
+### Лучшие практики с точки зрения DevOps
 
-1. **Code Organization**
+1. **Организация кода**
    ```
-   components/    # Reusable UI services
-   views/         # Page-level components
-   store/         # Global state
-   utils/         # Shared utilities
+   components/    # Переиспользуемые UI сервисы
+   views/         # Компоненты уровня страницы
+   store/         # Глобальное состояние
+   utils/         # Общие утилиты
    ```
 
-2. **Error Handling**
+2. **Обработка ошибок**
    ```js
-   // Like service health checks
+   // Как проверки работоспособности сервиса
    try {
      await apiCall()
    } catch (error) {
      if (error.response?.status === 401) {
-       // Handle authentication error
+       // Обработка ошибки аутентификации
      }
    }
    ```
 
-3. **Performance**
-   - Lazy loading = Like container optimization
-   - Caching = Like Redis caching
-   - Code splitting = Like microservices
+3. **Производительность**
+   - Lazy loading = Как оптимизация контейнера
+   - Caching = Как Redis caching
+   - Code splitting = Как микросервисы
 
-### Migration from Backend to Frontend Mindset
+### Переход от Backend к Frontend мышлению
 
-| Backend Concept | Frontend Equivalent |
-|----------------|-------------------|
-| Microservices  | Components        |
-| Environment    | Vuex Store        |
-| API Routes     | Vue Router        |
-| Middleware     | Route Guards      |
-| Database       | Local Storage     |
-| Logging        | Console/DevTools  |
-| Health Checks  | Error Boundaries  |
-| Load Balancing | Lazy Loading     |
+| Backend концепция | Frontend эквивалент |
+|-------------------|--------------------|
+| Микросервисы     | Компоненты         |
+| Окружение        | Vuex Store         |
+| API Routes       | Vue Router         |
+| Middleware       | Route Guards       |
+| База данных      | Local Storage      |
+| Логирование      | Console/DevTools   |
+| Health Checks    | Error Boundaries   |
+| Load Balancing   | Lazy Loading       |
 
-### Learning Path
+### Путь обучения
 
-1. **Start with Components**
-   - Create simple components
-   - Understand lifecycle hooks
-   - Learn component communication
+1. **Начните с компонентов**
+   - Создайте простые компоненты
+   - Изучите lifecycle hooks
+   - Изучите коммуникацию между компонентами
 
-2. **Move to State Management**
-   - Implement Vuex store
-   - Handle async operations
-   - Manage global state
+2. **Перейдите к управлению состоянием**
+   - Реализуйте Vuex store
+   - Обрабатывайте асинхронные операции
+   - Управляйте глобальным состоянием
 
-3. **Add Routing**
-   - Set up routes
-   - Add navigation guards
-   - Handle route parameters
+3. **Добавьте маршрутизацию**
+   - Настройте routes
+   - Добавьте navigation guards
+   - Обрабатывайте route parameters
 
-4. **Advanced Topics**
-   - Performance optimization
-   - Error handling
-   - Testing components
+4. **Продвинутые темы**
+   - Оптимизация производительности
+   - Обработка ошибок
+   - Тестирование компонентов
 
-### Resources
+### Ресурсы
 
-1. **Documentation**
+1. **Документация**
    - Vue.js: https://vuejs.org/guide/introduction.html
    - Vuex: https://vuex.vuejs.org/
    - Vue Router: https://router.vuejs.org/
 
-2. **Tools**
+2. **Инструменты**
    - Vue DevTools
    - Vite
    - VS Code + Volar extension
 
-3. **Project Structure**
-   - Check `client/src/views/` for page components
-   - Check `client/src/components/` for reusable parts
-   - Check `client/src/store/` for state management
+3. **Структура проекта**
+   - Проверьте `client/src/views/` для компонентов страниц
+   - Проверьте `client/src/components/` для переиспользуемых частей
+   - Проверьте `client/src/store/` для управления состоянием

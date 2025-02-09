@@ -1,117 +1,117 @@
-# Security Overview
+# Обзор безопасности
 
-## Authentication Security
+## Безопасность аутентификации
 
-### JWT Implementation
-- Tokens are stored in HTTP-only cookies to prevent XSS attacks
-- SameSite=Lax attribute prevents CSRF attacks
-- Token expiration is set to 7 days
-- Token validation includes signature and expiration checks
-- Tokens are stored in database for additional security
-- Token revocation is supported through database lookup
+### Реализация JWT
+- Токены хранятся в HTTP-only cookie для предотвращения XSS-атак.
+- Атрибут SameSite=Lax предотвращает CSRF-атаки.
+- Срок действия токена установлен в 7 дней.
+- Проверка токена включает проверку подписи и срока действия.
+- Токены хранятся в базе данных для дополнительной безопасности.
+- Поддерживается отзыв токенов через поиск в базе данных.
 
-### Password Security
-- Passwords are hashed using bcrypt with cost factor 14
-- No plain-text passwords are stored or transmitted
-- Password reset functionality requires email verification (TODO)
+### Безопасность паролей
+- Пароли хешируются с использованием bcrypt с коэффициентом стоимости 14.
+- Пароли в открытом виде не хранятся и не передаются.
+- Функция сброса пароля требует подтверждения по электронной почте (TODO).
 
-## Authorization
+## Авторизация
 
-### Role-Based Access Control (RBAC)
-- Two distinct roles: User (1) and Admin (2)
-- Role checking implemented in both frontend and backend
-- Admin routes are protected by middleware
-- Frontend routes have meta requirements for admin access
+### Role-Based Access Control (RBAC) / Контроль доступа на основе ролей
+- Две различные роли: Пользователь (1) и Администратор (2).
+- Проверка ролей реализована как во внешнем интерфейсе, так и во внутреннем.
+- Маршруты администратора защищены промежуточным программным обеспечением.
+- Маршруты внешнего интерфейса имеют мета-требования для доступа администратора.
 
-### Route Protection
-- All sensitive routes require valid JWT
-- Admin routes check role in addition to JWT
-- Invalid tokens result in immediate logout
-- Expired tokens are properly handled
+### Защита маршрутов
+- Все конфиденциальные маршруты требуют действительный JWT.
+- Маршруты администратора проверяют роль в дополнение к JWT.
+- Недействительные токены приводят к немедленному выходу из системы.
+- Срок действия токенов обрабатывается должным образом.
 
-## Frontend Security
+## Безопасность внешнего интерфейса
 
-### State Management
-- User details stored in Vuex with proper mutations
-- No sensitive data stored in localStorage
-- Authentication state properly synced with backend
+### Управление состоянием
+- Данные пользователя хранятся в Vuex с правильными мутациями.
+- Конфиденциальные данные не хранятся в localStorage.
+- Состояние аутентификации правильно синхронизируется с внутренним интерфейсом.
 
-### Form Security
-- Input validation on both client and server
-- XSS prevention through proper escaping
-- CSRF protection via SameSite cookies
-- File upload validation (TODO)
+### Безопасность форм
+- Проверка ввода как на стороне клиента, так и на стороне сервера.
+- Предотвращение XSS с помощью правильного экранирования.
+- Защита CSRF с помощью файлов cookie SameSite.
+- Проверка загрузки файлов (TODO).
 
-### Error Handling
-- Sensitive information never exposed in errors
-- Proper error boundaries prevent app crashes
-- Network errors handled gracefully
-- User-friendly error messages
+### Обработка ошибок
+- Конфиденциальная информация никогда не раскрывается в ошибках.
+- Правильные границы ошибок предотвращают сбои приложения.
+- Сетевые ошибки обрабатываются корректно.
+- Понятные сообщения об ошибках.
 
-## Backend Security
+## Безопасность внутреннего интерфейса
 
-### Database Security
-- Prepared statements prevent SQL injection
-- Connection pooling properly configured
-- Database credentials in environment variables
-- Transaction handling for critical operations
+### Безопасность базы данных
+- Подготовленные операторы предотвращают SQL-инъекции.
+- Пул подключений правильно настроен.
+- Учетные данные базы данных в переменных среды.
+- Обработка транзакций для критических операций.
 
-### API Security
-- Rate limiting needed (TODO)
-- Request validation middleware
-- Proper error status codes
-- Secure headers configuration
+### Безопасность API
+- Необходимо ограничение скорости (TODO).
+- Промежуточное программное обеспечение для проверки запросов.
+- Правильные коды состояния ошибок.
+- Конфигурация безопасных заголовков.
 
-### Server Configuration
-- CORS properly configured
-- Security headers implemented
-- Graceful shutdown handling
-- Database connection timeout handling
+### Конфигурация сервера
+- CORS правильно настроен.
+- Реализованы заголовки безопасности.
+- Обработка корректного завершения работы.
+- Обработка тайм-аута подключения к базе данных.
 
-## Development Security
+## Безопасность разработки
 
-### Environment Variables
-- Sensitive data in .env files
-- Different configs for dev/prod
-- Environment validation on startup
-- No hardcoded secrets
+### Переменные среды
+- Конфиденциальные данные в файлах .env.
+- Различные конфигурации для разработки/производства.
+- Проверка среды при запуске.
+- Отсутствие жестко закодированных секретов.
 
-### Logging
-- No sensitive data in logs
-- Structured logging format
-- Error details logged for debugging
-- Request logging with proper data
+### Ведение журнала
+- Отсутствие конфиденциальных данных в журналах.
+- Структурированный формат ведения журнала.
+- Детали ошибок регистрируются для отладки.
+- Регистрация запросов с правильными данными.
 
-## TODO Security Improvements
+## TODO Улучшения безопасности
 
-1. Rate Limiting
-   - Implement rate limiting for auth endpoints
-   - Add IP-based rate limiting
-   - Configure proper limits
+1. Ограничение скорости
+   - Реализовать ограничение скорости для конечных точек аутентификации.
+   - Добавить ограничение скорости на основе IP.
+   - Настроить правильные лимиты.
 
-2. Password Reset
-   - Implement secure password reset
-   - Add email verification
-   - Rate limit reset requests
+2. Сброс пароля
+   - Реализовать безопасный сброс пароля.
+   - Добавить подтверждение по электронной почте.
+   - Ограничить скорость запросов сброса.
 
-3. Session Management
-   - Add session invalidation
-   - Implement remember-me functionality
-   - Add device tracking
+3. Управление сеансами
+   - Добавить аннулирование сеанса.
+   - Реализовать функцию "запомнить меня".
+   - Добавить отслеживание устройств.
 
-4. Monitoring
-   - Add security event logging
-   - Implement audit trail
-   - Add automated alerts
+4. Мониторинг
+   - Добавить ведение журнала событий безопасности.
+   - Реализовать контрольный журнал.
+   - Добавить автоматические оповещения.
 
-5. Data Protection
-   - Add data encryption at rest
-   - Implement backup system
-   - Add data retention policies
+5. Защита данных
+   - Добавить шифрование данных в состоянии покоя.
+   - Реализовать систему резервного копирования.
+   - Добавить политики хранения данных.
 
-## Security Headers
+## Заголовки безопасности
 
-The following security headers should be implemented:
+Следующие заголовки безопасности должны быть реализованы:
 
 ```go
 // TODO: Implement in main.go
@@ -122,16 +122,16 @@ c.Header("Content-Security-Policy", "default-src 'self'")
 c.Header("Referrer-Policy", "strict-origin-when-cross-origin")
 ```
 
-## Security Testing Checklist
+## Контрольный список проверки безопасности
 
-Before deployment:
-- [ ] Verify JWT implementation
-- [ ] Test CSRF protection
-- [ ] Validate input sanitization
-- [ ] Check error handling
-- [ ] Test role-based access
-- [ ] Verify secure headers
-- [ ] Test rate limiting
-- [ ] Validate password security
-- [ ] Check session handling
-- [ ] Test error recovery
+Перед развертыванием:
+- [ ] Проверить реализацию JWT
+- [ ] Проверить защиту CSRF
+- [ ] Проверить очистку ввода
+- [ ] Проверить обработку ошибок
+- [ ] Проверить доступ на основе ролей
+- [ ] Проверить безопасные заголовки
+- [ ] Проверить ограничение скорости
+- [ ] Проверить безопасность пароля
+- [ ] Проверить обработку сеансов
+- [ ] Проверить восстановление после ошибок

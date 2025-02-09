@@ -1,175 +1,175 @@
-# Project Improvements TODO List
+# Список задач по улучшению проекта
 
-## Bonus
-- [ ] Replace hard-coded values with variables according to the DevOps good practices
-  - `server/middleware/userEdit.go`: The code uses hardcoded values for `Roleid`, `Officeid` and `ID` in the `UpdateUserParams`. These should be replaced with variables.
+## Бонус
+- [ ] Заменить жестко закодированные значения переменными в соответствии с лучшими практиками DevOps
+  - `server/middleware/userEdit.go`: В коде используются жестко закодированные значения для `Roleid`, `Officeid` и `ID` в `UpdateUserParams`. Их следует заменить переменными.
 
-## S-Tier (Critical Security & Stability Issues)
-- [x] Fix database connection pooling - current implementation uses a global DB variable and doesn't properly manage connections
-  - `server/middleware/dbConnect.go`: The code uses `sql.Open` to open a database connection and sets connection pool parameters using `SetMaxOpenConns`, `SetMaxIdleConns`, and `SetConnMaxLifetime`. This addresses the database connection pooling issue.
-- [x] Add proper error handling for database connection failures instead of `log.Fatal`
-  - `server/middleware/dbConnect.go`: The code includes error handling for database connection failures using `db.PingContext` and returns an error if the connection fails. The `initDB` function returns an error, which is then handled by `GetDB`. This addresses the error handling issue.
-- [x] Implement secure session management 
-  - JWT implementation now uses HTTP-only cookies
-  - Token expiration is properly handled
-  - Cookie clearing on logout is implemented
-  - Token validation includes proper error handling
-- [x] Add input validation and sanitization for user inputs
-  - Form validation implemented in EditUser component
-  - Email format validation added
-  - Required field validation added
-  - Role and office validation implemented
-- [x] Add CSRF protection for forms
-  - Using SameSite cookies (Lax mode) for CSRF protection
-  - Token validation on all protected endpoints
-- [ ] Move environment variables to a secure configuration management system
-  - `server/.env`: The code uses a `.env` file to store environment variables. This is not a secure configuration management system.
-- [ ] Add rate limiting for authentication endpoints
-  - `server/middleware/register.go`: The code does not have rate limiting for the registration endpoint.
-- [x] Implement proper password validation rules
-  - Password hashing with bcrypt implemented
-  - Password complexity validation added in registration
-- [ ] Add database migration system for schema changes
-  - `server/config/database.go`: The code does not have a database migration system.
+## S-Tier (Критические проблемы безопасности и стабильности)
+- [x] Исправить пул соединений с базой данных - текущая реализация использует глобальную переменную DB и не управляет соединениями должным образом
+  - `server/middleware/dbConnect.go`: Код использует `sql.Open` для открытия соединения с базой данных и устанавливает параметры пула соединений с помощью `SetMaxOpenConns`, `SetMaxIdleConns` и `SetConnMaxLifetime`. Это решает проблему пула соединений с базой данных.
+- [x] Добавить правильную обработку ошибок при сбоях подключения к базе данных вместо `log.Fatal`
+  - `server/middleware/dbConnect.go`: Код включает обработку ошибок при сбоях подключения к базе данных с использованием `db.PingContext` и возвращает ошибку, если соединение не удается. Функция `initDB` возвращает ошибку, которая затем обрабатывается `GetDB`. Это решает проблему обработки ошибок.
+- [x] Реализовать безопасное управление сессиями
+  - Реализация JWT теперь использует HTTP-only cookies
+  - Правильно обрабатывается истечение срока действия токена
+  - Реализована очистка cookie при выходе из системы
+  - Валидация токена включает правильную обработку ошибок
+- [x] Добавить валидацию и очистку входных данных пользователя
+  - Реализована проверка формы в компоненте EditUser
+  - Добавлена проверка формата электронной почты
+  - Добавлена проверка обязательных полей
+  - Реализована проверка ролей и офисов
+- [x] Добавить защиту CSRF для форм
+  - Использование SameSite cookies (Lax mode) для защиты CSRF
+  - Валидация токена на всех защищенных конечных точках
+- [ ] Переместить переменные среды в безопасную систему управления конфигурацией
+  - `server/.env`: Код использует файл `.env` для хранения переменных среды. Это не безопасная система управления конфигурацией.
+- [ ] Добавить ограничение скорости для конечных точек аутентификации
+  - `server/middleware/register.go`: В коде отсутствует ограничение скорости для конечной точки регистрации.
+- [x] Реализовать правильные правила проверки пароля
+  - Реализовано хеширование пароля с помощью bcrypt
+  - Добавлена проверка сложности пароля при регистрации
+- [ ] Добавить систему миграции базы данных для изменений схемы
+  - `server/config/database.go`: В коде отсутствует система миграции базы данных.
 
-## A-Tier (Important Functionality & Performance)
-- [x] Implement proper logging system with levels
-  - Added structured logging with timestamp, method, path, status code, and latency
-  - Error logging included in global error handler
-- [x] Add database transaction handling for critical operations
-  - Database operations now use proper connection pooling
-  - Error handling for database operations improved
-- [ ] Implement proper API versioning
-- [x] Add request context timeout handling
-  - Added context timeout for database operations
-  - Added graceful shutdown with timeout
-- [x] Implement proper error responses with consistent format
-  - Added ErrorBoundary component for frontend errors
-  - Consistent error message format in API responses
-- [ ] Add database query optimization and indexing
-- [ ] Implement caching layer for frequently accessed data
-- [ ] Add proper metrics collection for monitoring
-- [x] Implement proper cleanup for expired sessions/tokens
-  - Token expiration check implemented
-  - Cookie cleanup on logout
+## A-Tier (Важная функциональность и производительность)
+- [x] Реализовать правильную систему ведения журнала с уровнями
+  - Добавлено структурированное ведение журнала с отметкой времени, методом, путем, кодом состояния и задержкой
+  - Ведение журнала ошибок включено в глобальный обработчик ошибок
+- [x] Добавить обработку транзакций базы данных для критических операций
+  - Операции с базой данных теперь используют правильный пул соединений
+  - Улучшена обработка ошибок для операций с базой данных
+- [ ] Реализовать правильное управление версиями API
+- [x] Добавить обработку таймаута контекста запроса
+  - Добавлен таймаут контекста для операций с базой данных
+  - Добавлено корректное завершение работы с таймаутом
+- [x] Реализовать правильные ответы об ошибках с согласованным форматом
+  - Добавлен компонент ErrorBoundary для ошибок интерфейса
+  - Согласованный формат сообщений об ошибках в ответах API
+- [ ] Добавить оптимизацию запросов к базе данных и индексацию
+- [ ] Реализовать уровень кэширования для часто используемых данных
+- [ ] Добавить правильный сбор метрик для мониторинга
+- [x] Реализовать правильную очистку устаревших сессий/токенов
+  - Реализована проверка срока действия токена
+  - Очистка cookie при выходе из системы
 
-## B-Tier (Code Quality & Maintainability)
-- [ ] Restructure project to follow standard Go project layout
-- [x] Add comprehensive API documentation
-  - Added detailed API documentation in docs/API.md
-  - Documented authentication flow and endpoints
-  - Added security considerations
-- [x] Implement proper dependency injection
-  - Removed global variables in favor of proper dependency injection
-  - Added store getters for better state management
-- [ ] Add unit tests for critical components
-- [ ] Add integration tests for API endpoints
-- [x] Implement proper interface abstractions
-  - Added proper component interfaces
-  - Improved state management abstraction
-- [x] Add code documentation
-  - Added JSDoc comments
-  - Improved function documentation
-  - Added API documentation
-- [x] Create proper development configurations
-  - Added proper Vite configuration
-  - Added TailwindCSS configuration
-  - Added proper environment handling
+## B-Tier (Качество кода и удобство сопровождения)
+- [ ] Реструктурировать проект в соответствии со стандартной структурой проекта Go
+- [x] Добавить исчерпывающую документацию по API
+  - Добавлена подробная документация по API в docs/API.md
+  - Документирован поток аутентификации и конечные точки
+  - Добавлены соображения безопасности
+- [x] Реализовать правильное внедрение зависимостей
+  - Удалены глобальные переменные в пользу правильного внедрения зависимостей
+  - Добавлены геттеры хранилища для лучшего управления состоянием
+- [ ] Добавить модульные тесты для критических компонентов
+- [ ] Добавить интеграционные тесты для конечных точек API
+- [x] Реализовать правильные абстракции интерфейсов
+  - Добавлены правильные интерфейсы компонентов
+  - Улучшена абстракция управления состоянием
+- [x] Добавить документацию к коду
+  - Добавлены комментарии JSDoc
+  - Улучшена документация функций
+  - Добавлена документация API
+- [x] Создать правильные конфигурации разработки
+  - Добавлена правильная конфигурация Vite
+  - Добавлена конфигурация TailwindCSS
+  - Добавлена правильная обработка среды
 
-## C-Tier (Frontend Improvements)
-- [x] Implement proper state management
-  - Added Vuex store with proper mutations
-  - Added computed properties
-  - Added proper state typing
-- [x] Add proper loading states
-  - Added loading indicators
-  - Added proper error states
-  - Added proper success states
-- [x] Implement proper error handling
-  - Added ErrorBoundary component
-  - Added proper error messages
-  - Added error recovery flows
-- [x] Add form validation
-  - Added client-side validation
-  - Added proper error messages
-  - Added validation feedback
-- [x] Improve responsive design
-  - Added responsive classes
-  - Added proper mobile navigation
-  - Added proper form layout
-- [ ] Add proper TypeScript types
-- [x] Implement proper route guards
-  - Added authentication guards
-  - Added role-based guards
-  - Added proper redirects
-- [ ] Add progressive loading for large data sets
+## C-Tier (Улучшения интерфейса)
+- [x] Реализовать правильное управление состоянием
+  - Добавлен магазин Vuex с правильными мутациями
+  - Добавлены вычисляемые свойства
+  - Добавлена правильная типизация состояния
+- [x] Добавить правильные состояния загрузки
+  - Добавлены индикаторы загрузки
+  - Добавлены правильные состояния ошибок
+  - Добавлены правильные состояния успеха
+- [x] Реализовать правильную обработку ошибок
+  - Добавлен компонент ErrorBoundary
+  - Добавлены правильные сообщения об ошибках
+  - Добавлены потоки восстановления после ошибок
+- [x] Добавить проверку формы
+  - Добавлена проверка на стороне клиента
+  - Добавлены правильные сообщения об ошибках
+  - Добавлена обратная связь по валидации
+- [x] Улучшить адаптивный дизайн
+  - Добавлены адаптивные классы
+  - Добавлена правильная мобильная навигация
+  - Добавлена правильная разметка формы
+- [ ] Добавить правильные типы TypeScript
+- [x] Реализовать правильные защиты маршрутов
+  - Добавлены охранники аутентификации
+  - Добавлены охранники на основе ролей
+  - Добавлены правильные перенаправления
+- [ ] Добавить прогрессивную загрузку для больших наборов данных
 
-## D-Tier (User Experience)
-- [x] Add proper feedback messages
-  - Added success messages
-  - Added error messages
-  - Added loading indicators
-- [x] Implement proper form validation feedback
-  - Added inline validation
-  - Added form-level validation
-  - Added proper error states
-- [ ] Add remember-me functionality
-- [x] Implement proper navigation
-  - Added proper navigation guards
-  - Added proper route handling
-  - Added proper links
-- [x] Add proper form validation feedback
-  - Added real-time validation
-  - Added proper error messages
-  - Added proper success states
-- [x] Implement proper loading indicators
-  - Added loading skeletons
-  - Added loading states
-  - Added proper transitions
-- [x] Add proper error recovery flows
-  - Added error boundary
-  - Added retry functionality
-  - Added proper error messages
-- [x] Implement proper notifications
-  - Added success notifications
-  - Added error notifications
-  - Added proper styling
+## D-Tier (Пользовательский опыт)
+- [x] Добавить правильные сообщения обратной связи
+  - Добавлены сообщения об успехе
+  - Добавлены сообщения об ошибках
+  - Добавлены индикаторы загрузки
+- [x] Реализовать правильную обратную связь по валидации формы
+  - Добавлена встроенная проверка
+  - Добавлена проверка на уровне формы
+  - Добавлены правильные состояния ошибок
+- [ ] Добавить функцию "Запомнить меня"
+- [x] Реализовать правильную навигацию
+  - Добавлены правильные охранники навигации
+  - Добавлена правильная обработка маршрутов
+  - Добавлены правильные ссылки
+- [x] Добавить правильную обратную связь по валидации формы
+  - Добавлена проверка в реальном времени
+  - Добавлены правильные сообщения об ошибках
+  - Добавлены правильные состояния успеха
+- [x] Реализовать правильные индикаторы загрузки
+  - Добавлены скелеты загрузки
+  - Добавлены состояния загрузки
+  - Добавлены правильные переходы
+- [x] Добавить правильные потоки восстановления после ошибок
+  - Добавлена граница ошибки
+  - Добавлена функция повтора
+  - Добавлены правильные сообщения об ошибках
+- [x] Реализовать правильные уведомления
+  - Добавлены уведомления об успехе
+  - Добавлены уведомления об ошибках
+  - Добавлено правильное оформление
 
-## E-Tier (Nice-to-Have Features)
-- [x] Add dark mode support
-  - Added dark mode toggle
-  - Added proper color scheme
-  - Added proper transitions
-- [ ] Implement multi-language support
-- [ ] Add export functionality for data
-- [x] Implement user preferences storage
-  - Added dark mode persistence
-  - Added proper state management
-- [ ] Add keyboard shortcuts
-- [ ] Implement proper print layouts
-- [x] Add accessibility features
-  - Added ARIA labels
-  - Added proper focus states
-  - Added proper color contrast
-- [ ] Implement data backup functionality
+## E-Tier (Приятные дополнения)
+- [x] Добавить поддержку темной темы
+  - Добавлен переключатель темной темы
+  - Добавлена правильная цветовая схема
+  - Добавлены правильные переходы
+- [ ] Реализовать многоязыковую поддержку
+- [ ] Добавить функцию экспорта данных
+- [x] Реализовать хранение пользовательских настроек
+  - Добавлено сохранение темной темы
+  - Добавлено правильное управление состоянием
+- [ ] Добавить сочетания клавиш
+- [ ] Реализовать правильные макеты для печати
+- [x] Добавить функции специальных возможностей
+  - Добавлены метки ARIA
+  - Добавлены правильные состояния фокуса
+  - Добавлен правильный цветовой контраст
+- [ ] Реализовать функцию резервного копирования данных
 
-## F-Tier (Future Considerations)
-- [ ] Add support for OAuth providers
-- [ ] Implement real-time updates using WebSocket
-- [ ] Add support for file attachments
-- [ ] Implement audit logging
-- [ ] Add support for different grading systems
-- [ ] Implement automated reports generation
-- [ ] Add support for academic calendar integration
-- [ ] Implement student attendance tracking
+## F-Tier (Будущие соображения)
+- [ ] Добавить поддержку провайдеров OAuth
+- [ ] Реализовать обновления в реальном времени с использованием WebSocket
+- [ ] Добавить поддержку вложений файлов
+- [ ] Реализовать аудит
+- [ ] Добавить поддержку различных систем оценок
+- [ ] Реализовать автоматическую генерацию отчетов
+- [ ] Добавить поддержку интеграции с академическим календарем
+- [ ] Реализовать отслеживание посещаемости студентов
 
-## Notes for Student Marks System Adaptation
-- Current "Office" concept can be repurposed for "Department" or "Faculty"
-- "Users" table needs to be extended with student-specific fields
-- New tables needed for:
-  - Courses
-  - Assignments
-  - Grades
-  - Academic Terms
-  - Student Groups
-  - Attendance Records
+## Заметки по адаптации системы оценок студентов
+- Текущая концепция "Офис" может быть перепрофилирована для "Департамента" или "Факультета"
+- Таблицу "Пользователи" необходимо расширить полями, специфичными для студентов
+- Необходимы новые таблицы для:
+  - Курсов
+  - Заданий
+  - Оценок
+  - Академических семестров
+  - Студенческих групп
+  - Записей о посещаемости

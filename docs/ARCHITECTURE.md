@@ -1,4 +1,4 @@
-# System Architecture Overview
+# Обзор архитектуры системы
 
 ```mermaid
 graph TD
@@ -6,36 +6,36 @@ graph TD
         VR[Vue Router]
         VX[Vuex Store]
         VC[Vue Components]
-        VC -->|State Management| VX
-        VC -->|Navigation| VR
-        VX -->|Auth State| VC
+        VC -->|Управление состоянием| VX
+        VC -->|Навигация| VR
+        VX -->|Состояние аутентификации| VC
     end
 
     subgraph Backend [Backend - Go]
         GR[Gin Router]
         MW[Middleware]
         DB[(MySQL)]
-        GR -->|Auth/Validation| MW
-        MW -->|Queries| DB
+        GR -->|Аутентификация/Валидация| MW
+        MW -->|Запросы| DB
     end
 
-    subgraph Security [Security Layer]
+    subgraph Security [Уровень безопасности]
         JWT[JWT Tokens]
         CORS[CORS]
         XSS[XSS Protection]
         CSRF[CSRF Protection]
     end
 
-    Frontend -->|HTTP Requests| Backend
-    Backend -->|JWT in HTTPOnly Cookie| Frontend
-    Security -->|Protects| Frontend
-    Security -->|Protects| Backend
+    Frontend -->|HTTP запросы| Backend
+    Backend -->|JWT в HTTPOnly Cookie| Frontend
+    Security -->|Защищает| Frontend
+    Security -->|Защищает| Backend
 
 ```
 
-## Component Communication Flow
+## Схема взаимодействия компонентов
 
-1. **Authentication Flow**
+1. **Схема аутентификации**
    ```mermaid
    sequenceDiagram
        participant User
@@ -43,17 +43,17 @@ graph TD
        participant Backend
        participant Database
        
-       User->>Frontend: Login Form
+       User->>Frontend: Форма логина
        Frontend->>Backend: POST /api/server/login
-       Backend->>Database: Validate Credentials
-       Database-->>Backend: User Details
-       Backend->>Backend: Generate JWT
-       Backend-->>Frontend: Set HTTPOnly Cookie
-       Frontend->>Frontend: Update Vuex Store
-       Frontend-->>User: Redirect to Home
+       Backend->>Database: Проверка учетных данных
+       Database-->>Backend: Данные пользователя
+       Backend->>Backend: Генерация JWT
+       Backend-->>Frontend: Установка HTTPOnly Cookie
+       Frontend->>Frontend: Обновление Vuex Store
+       Frontend-->>User: Перенаправление на главную страницу
    ```
 
-2. **Protected Route Access**
+2. **Доступ к защищенным маршрутам**
    ```mermaid
    sequenceDiagram
        participant User
@@ -61,80 +61,80 @@ graph TD
        participant Store
        participant Backend
        
-       User->>Router: Access Admin Route
-       Router->>Store: Check User Role
-       Store->>Backend: Validate Token
-       Backend-->>Store: Token Valid/Invalid
-       Store-->>Router: Allow/Deny Access
-       Router-->>User: Show Page/Redirect
+       User->>Router: Доступ к Admin Route
+       Router->>Store: Проверка роли пользователя
+       Store->>Backend: Валидация токена
+       Backend-->>Store: Токен действителен/недействителен
+       Store-->>Router: Разрешить/Запретить доступ
+       Router-->>User: Показать страницу/Перенаправить
    ```
 
-## Key Technologies
+## Ключевые технологии
 
 ### Frontend Stack
-- **Vue 3**: Core framework
-- **Vuex**: State management
-- **Vue Router**: Client-side routing
-- **TailwindCSS**: Utility-first styling
-- **Vite**: Build tool and dev server
+- **Vue 3**: Основной фреймворк
+- **Vuex**: Управление состоянием
+- **Vue Router**: Клиентская маршрутизация
+- **TailwindCSS**: Утилитарные стили
+- **Vite**: Инструмент сборки и dev-сервер
 
 ### Backend Stack
-- **Go**: Core language
-- **Gin**: Web framework
-- **JWT**: Authentication
-- **MySQL**: Database
+- **Go**: Основной язык
+- **Gin**: Веб-фреймворк
+- **JWT**: Аутентификация
+- **MySQL**: База данных
 - **SQLC**: Type-safe SQL
 
-## Security Implementation
+## Реализация безопасности
 
 ### Token Flow
 ```mermaid
 flowchart LR
-    Login[Login Request] -->|Credentials| Auth[Auth Handler]
-    Auth -->|Generate| JWT[JWT Token]
-    JWT -->|Store| Cookie[HTTPOnly Cookie]
-    Cookie -->|Send| Client[Client]
-    Client -->|Include| Requests[API Requests]
-    Requests -->|Validate| Middleware[Auth Middleware]
+    Login[Login Request] -->|Учетные данные| Auth[Auth Handler]
+    Auth -->|Генерация| JWT[JWT Token]
+    JWT -->|Хранение| Cookie[HTTPOnly Cookie]
+    Cookie -->|Отправка| Client[Client]
+    Client -->|Включение| Requests[API Requests]
+    Requests -->|Валидация| Middleware[Auth Middleware]
 ```
 
 ### Data Flow
 ```mermaid
 flowchart TD
     Client[Client Request] -->|JWT| API[API Endpoint]
-    API -->|Validate| Auth[Auth Middleware]
-    Auth -->|Check| Role[Role Permission]
-    Role -->|Query| DB[Database]
-    DB -->|Response| API
+    API -->|Валидация| Auth[Auth Middleware]
+    Auth -->|Проверка| Role[Role Permission]
+    Role -->|Запрос| DB[Database]
+    DB -->|Ответ| API
     API -->|JSON| Client
 ```
 
-## Directory Structure Explained
+## Описание структуры каталогов
 
 ```
 mospolytech-web-app/
-├── client/                 # Frontend Vue application
+├── client/                 # Frontend Vue приложение
 │   ├── src/
-│   │   ├── components/     # Reusable Vue components
-│   │   ├── views/         # Page components
-│   │   ├── store/         # Vuex state management
-│   │   └── routes.js      # Vue Router configuration
+│   │   ├── components/     # Переиспользуемые Vue компоненты
+│   │   ├── views/         # Страницы
+│   │   ├── store/         # Vuex управление состоянием
+│   │   └── routes.js      # Vue Router конфигурация
 │   └── ...
-├── server/                 # Backend Go application
-│   ├── middleware/        # Request processing
-│   ├── config/           # Application configuration
-│   ├── db/              # Database management
+├── server/                 # Backend Go приложение
+│   ├── middleware/        # Обработка запросов
+│   ├── config/           # Конфигурация приложения
+│   ├── db/              # Управление базой данных
 │   └── ...
-└── docs/                  # Documentation
-    ├── API.md            # API specifications
-    ├── SECURITY.md       # Security implementation
-    └── API_EXAMPLES.md   # API usage examples
+└── docs/                  # Документация
+    ├── API.md            # Спецификации API
+    ├── SECURITY.md       # Реализация безопасности
+    └── API_EXAMPLES.md   # Примеры использования API
 ```
 
-## DevOps Considerations
+## DevOps соображения
 
-### Environment Variables
-Located in `.env`:
+### Переменные окружения
+Находятся в `.env`:
 ```env
 # Database Configuration
 DB_USER=your_db_user
@@ -152,30 +152,30 @@ CLIENT_PORT=8087
 ```
 
 ### Docker Configuration
-The application is containerized with separate services:
-- Frontend container (Vue)
-- Backend container (Go)
-- Database container (MySQL)
+Приложение контейнеризировано с разделением на сервисы:
+- Frontend контейнер (Vue)
+- Backend контейнер (Go)
+- Database контейнер (MySQL)
 
 ### Development Workflow
-1. Local development with hot-reload
-2. Testing in containerized environment
-3. Production deployment with optimized builds
+1. Локальная разработка с hot-reload
+2. Тестирование в контейнеризированном окружении
+3. Production деплой с оптимизированными сборками
 
-## Common Development Tasks
+## Распространенные задачи разработки
 
-### Adding New Features
-1. Create backend endpoint in `server/middleware/`
-2. Add route in `server/main.go`
-3. Create frontend component in `client/src/components/`
-4. Add route in `client/src/routes.js`
-5. Update documentation in `docs/`
+### Добавление новых функций
+1. Создать backend endpoint в `server/middleware/`
+2. Добавить маршрут в `server/main.go`
+3. Создать frontend компонент в `client/src/components/`
+4. Добавить маршрут в `client/src/routes.js`
+5. Обновить документацию в `docs/`
 
-### Security Updates
-1. Update JWT configuration
-2. Modify CORS settings
-3. Add security headers
-4. Update cookie settings
-5. Document changes
+### Обновления безопасности
+1. Обновить JWT конфигурацию
+2. Изменить CORS настройки
+3. Добавить заголовки безопасности
+4. Обновить настройки cookie
+5. Задокументировать изменения
 
-This architecture overview should help you understand the system's components and their interactions. The mermaid diagrams provide a visual representation of the flows, making it easier to grasp the system's behavior.
+Этот обзор архитектуры должен помочь вам понять компоненты системы и их взаимодействие. Mermaid диаграммы предоставляют визуальное представление потоков, облегчая понимание поведения системы.
